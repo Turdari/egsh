@@ -14,4 +14,5 @@ sudo rm -rf $INS_DIR_LIB/egsh
 sudo rm -rf $INS_DIR_BIN/egsh
 
 sudo git clone $EGSH_DIR $INS_DIR_LIB/egsh
+sudo git -C $INS_DIR_LIB/egsh remote set-url origin https://github.com/Turdari/egsh.git
 sudo ln -s $INS_DIR_LIB/egsh/egsh $INS_DIR_BIN
