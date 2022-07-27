@@ -1,0 +1,55 @@
+#!/bin/bash
+
+export EGSH_DIR ;
+export EGSH_VERSION ;
+export EGSH_USR_DIR ;
+export EGSH_USR_INC ;
+export EGSH_USR_SRC ;
+export EGSH_USR_ENV ;
+export EGSH_USR_DCMD ;
+
+export EGSH_CTX_CORE ;
+export EGSH_CTX_ENV ;
+
+#only one function allowed 
+ENV(){
+	echo 
+	echo "< ${FUNCNAME[0]} - env sync >"
+	if [ -z $1 ] ; 
+	then	echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
+		echo "CMD := { ls_env(ls) | make_env(mk) | sync_env(sync) }"
+	else
+
+
+
+case $1 in
+	ls_env | ls )
+		ls $HOME/.egsh/src/shared/ENV
+	;;
+	make_env | mk )
+		if [ ! -z $2 ] ; 
+		then	mkdir $ENVDIR/$2-$(date "+%F-%T")
+		else	echo "Usage : make_env(mk) < envname >"
+		fi
+	;;
+	sync_env | sync )
+		if [ ! -z $2 ] && [ $2 == 'T' ] ;then 
+			for i in $( ls $ENVDIR/rsp-2021-05-26-06:19:26 )
+			do 	echo "Candidate $i"
+				realpath $ENVDIR/rsp-2021-05-26-06:19:26/$i
+			done 
+		else	echo "Usage : sync_env(sync) < envname | envnum | T >"
+		fi
+	;;
+	* )	
+	;;
+esac
+
+	fi
+	return 
+}
+
+
+
+
+

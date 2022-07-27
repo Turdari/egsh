@@ -1,0 +1,111 @@
+#!/bin/bash
+
+#	1. Print egsh version
+#   2. Prepare .egsh
+#       1. Preserve User Home when called with sudo
+#       2. Set .egsh with current context
+#   3. Run CORE activity
+#   4. Run Delayed Command activity
+#       1. Check delayed command(Install,Download,Upload ...) exist
+#       2. Run delayed command background
+
+#Set EGSH current running context
+#SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+EGSH_DIR=$( cd -- "$( dirname -- $(readlink -f "${BASH_SOURCE[0]}") )" &> /dev/null && pwd )
+EGSH_OWNER_ID=$(stat -c %u $EGSH_DIR)
+
+EGSH_CTX_SRC=$EGSH_DIR/src                  #
+EGSH_CTX_CORE=$EGSH_DIR/core                #
+EGSH_CTX_LIB=$EGSH_DIR/lib
+EGSH_CTX_CORE_LIB=$EGSH_CTX_LIB/CORE        #
+
+EGSH_CTX_ENV_LIB=$EGSH_CTX_CORE_LIB/ENV     #     
+EGSH_CTX_DCMD_LIB=$EGSH_CTX_CORE_LIB/DCMD   #
+EGSH_CTX_PKG_LIB=$EGSH_CTX_CORE_LIB/CORE    #
+
+EGSH_RETURN=0
+
+UHOME=$HOME                         # 2.1
+UNAME=$USER                         # 2.1
+
+#   1. Print egsh version
+#echo "<< EGSH $(git log -1 --format=%cd )>>"
+echo "<< EGSH >>"
+#   2. Prepare .egsh
+#   2.1 Preserve User Home when called with sudo
+if [ ! -z "$SUDO_COMMAND" ] && [ ! -z "$SUDO_USER" ] ; then	
+	#echo "SCOMMAND = $SUDO_COMMAND , SUSER = $SUDO_USER"
+	echo "$SUDO_COMMAND" | grep -q "egsh" ; 
+	SCBOOL=$?
+	echo "$SUDO_USER" | grep -vq "root" ; 
+	SUBOOL=$?
+	#echo "SCBOOL = $SCBOOL, SUBOOL = $SUBOOL"
+
+	if [ $SCBOOL -eq 0 ] && [ $SUBOOL -eq 0 ] ; then
+		# Change directory for $UHOME
+		UHOME=$( getent passwd "$SUDO_USER" | cut -d: -f6 )
+		UNAME=$SUDO_USER
+	fi
+fi
+#   2.2 Set .egsh with current context
+if [ ! -d "$UHOME/.egsh" ] ; 
+then 
+	echo "$UHOME/.egsh not exist! create .egsh "
+	if ( test -d "$EGSH_DIR" )
+	then
+		mkdir -p $UHOME/.egsh/dcmd
+		mkdir -p $UHOME/.egsh/include
+		mkdir -p $UHOME/.egsh/env
+        ln -s $EGSH_DIR $UHOME/.egsh/egsh
+		echo "$EGSH_DIR copied"
+	else	
+        echo "$EGSH_DIR corrupted, Reinstall package"
+		exit -1
+	fi
+else 
+	#echo "$UHOME/.egsh exist! Set .egsh with current context " 
+    rm -f $UHOME/.egsh/dcmd/*
+    rm $UHOME/.egsh/egsh
+    ln -s $EGSH_DIR $UHOME/.egsh/egsh
+fi
+
+
+#   2.3 Make All variable stable
+
+EGSH_USR_DIR=$UHOME/.egsh           #
+EGSH_USR_DCMD=$UHOME/.egsh/dcmd     # local user 
+EGSH_USR_INC=$UHOME/.egsh/include   # local user 
+EGSH_USR_SRC=$UHOME/.egsh/egsh/src  # Set 
+EGSH_USR_ENV=$UHOME/.egsh/env       # for local user
+
+EXCLUDEDIR=$EGSH_USR_SRC
+
+export EGSH_DIR ;
+export EGSH_VERSION ;
+export EGSH_USR_DIR ;
+export EGSH_USR_INC ;
+export EGSH_USR_SRC ;
+export EGSH_USR_ENV ;
+export EGSH_USR_DCMD ;
+
+#export EGSH_CTX_CORE ;
+#export EGSH_CTX_ENV ;
+export EGSH_CTX_ENV_LIB ;    
+export EGSH_CTX_DCMD_LIB ;
+export EGSH_CTX_PKG_LIB ;
+
+############## CORE EXCUTION ###############
+$EGSH_CTX_CORE/CORE $@
+EGSH_RETURN=$?
+############## CORE EXCUTION ###############
+
+#   4. Run Delay Command activity
+if [ -d $EGSH_USR_DCMD ] 
+then
+    if ( ls $EGSH_USR_DCMD | grep -q ".*\.sh" ) ; then
+        sudo rm -f /tmp/DCMD
+        sudo cp $EGSH_CTX_CORE/DCMD /tmp/DCMD  
+        /tmp/DCMD &
+    fi  
+fi
+
