@@ -54,7 +54,7 @@ ip_address_add()
 	return
 }
 
-ip_address_add()
+ip_address_del()
 {
 	sudo ip address del dev $IFNAME 10.0.10.1/24
 	sudo ip address del dev $IFNAME.1 10.0.10.3/24
@@ -75,11 +75,22 @@ ip_route_simple()
     return
 }
 
-
 ip_arp_set()
 {
     sudo arp -i $IFNAME.1 -s 10.0.10.6 00:11:22:33:44:55                                                                                                                        
     sudo arp -i $IFNAME.2 -s 10.0.10.4 00:11:22:33:44:55 
+    return
+}
+
+ip_pc1_arp_set()
+{
+    sudo arp -i $IFNAME.1 -s 10.0.10.11 00:11:22:33:44:55
+    return
+}
+
+ip_pc2_arp_set()
+{
+    sudo arp -i $IFNAME.1 -s 10.0.10.10 00:11:22:33:44:55
     return
 }
 
