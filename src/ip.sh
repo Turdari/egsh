@@ -84,7 +84,6 @@ ip_arp_set()
 
 ip_pc1_arp_set()
 {
-    sudo arp -i $IFNAME.1 -s 10.0.10.11 00:11:22:33:44:55
     return
 }
 
@@ -103,26 +102,13 @@ ip_pc1_set()
     MYMACADDR="96:63:37:58:11:11"
 	
     sudo ip link set $IFNAME down
-	sudo ip link set $IFNAME.1 down
-
-	sudo ip link add link $IFNAME address $MYMACADDR $IFNAME.1 type macvlan
-
-	sudo ip address del dev $IFNAME 10.0.10.1/24
-	sudo ip address del dev $IFNAME.1 $URIPADDR/24
-	sudo ip address del dev $IFNAME.1 $MYIPADDR/24
-	
-	sudo ip address add dev $IFNAME 10.0.10.1/24
-	sudo ip address add dev $IFNAME.1 $MYIPADDR/24
-
+	sudo ip address del dev $IFNAME $MYIPADDR/24
+	sudo ip address add dev $IFNAME $MYIPADDR/24
 	sudo ip link set $IFNAME up
-	sudo ip link set $IFNAME.1 up
-
-    sudo ip r del 10.0.10.2 dev $IFNAME
+    sudo arp -i $IFNAME -d $URIPADDR 00:11:22:33:44:55
+    sudo arp -i $IFNAME -s $URIPADDR 00:11:22:33:44:55
     sudo ip r del 10.0.10.0/24 dev $IFNAME
-    sudo ip r del 10.0.10.0/24 dev $IFNAME.1
-
-    sudo ip r add 10.0.10.2 dev $IFNAME  
-    sudo ip r add 10.0.10.0/24 dev $IFNAME.1                                                                                                                               
+    sudo ip r add 10.0.10.0/24 dev $IFNAME
     
     return
 }
@@ -130,32 +116,20 @@ ip_pc1_set()
 ip_pc2_set()
 {
 	echo "ip link, address, route set for pc2"
-  
+
     URIPADDR="10.0.10.10"
     MYIPADDR="10.0.10.11"
     MYMACADDR="96:63:37:58:22:11"
 	
     sudo ip link set $IFNAME down
-	sudo ip link set $IFNAME.1 down
-
-	sudo ip link add link $IFNAME address $MYMACADDR $IFNAME.1 type macvlan
-
-	sudo ip address del dev $IFNAME 10.0.10.1/24
-	sudo ip address del dev $IFNAME.1 $URIPADDR/24
-	sudo ip address del dev $IFNAME.1 $MYIPADDR/24
-	
-	sudo ip address add dev $IFNAME 10.0.10.1/24
-	sudo ip address add dev $IFNAME.1 $MYIPADDR/24
-
+	sudo ip address del dev $IFNAME $MYIPADDR/24
+	sudo ip address add dev $IFNAME $MYIPADDR/24
 	sudo ip link set $IFNAME up
-	sudo ip link set $IFNAME.1 up
-
-    sudo ip r del 10.0.10.2 dev $IFNAME
+    sudo arp -i $IFNAME -d $URIPADDR 00:11:22:33:44:55
+    sudo arp -i $IFNAME -s $URIPADDR 00:11:22:33:44:55
     sudo ip r del 10.0.10.0/24 dev $IFNAME
-    sudo ip r del 10.0.10.0/24 dev $IFNAME.1
-
-    sudo ip r add 10.0.10.2 dev $IFNAME  
-    sudo ip r add 10.0.10.0/24 dev $IFNAME.1                                                                                                                               
+    sudo ip r add 10.0.10.0/24 dev $IFNAME
+  
  
     return
 }

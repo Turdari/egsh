@@ -101,6 +101,14 @@ xilinx_usb_setup()
     return
 }
 
+xilinx_usb_setup2()
+{
+	echo "${FUNCNAME[0]}"
+    stty -F /dev/ttyACM1 raw
+    stty -F /dev/ttyACM1 -echo -echoe -echok
+    return
+}
+
 xilinx_usb_loop_create()
 {
 	echo "${FUNCNAME[0]}"
