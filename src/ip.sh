@@ -133,3 +133,56 @@ ip_pc2_set()
  
     return
 }
+
+ip_pc1_set2()
+{
+	echo "ip link, address set for pc1"
+    MYIPADDR="10.0.10.10"
+    MYMACADDR="96:63:37:58:11:11"
+
+    sudo ip link set $IFNAME down
+	sudo ip address del dev $IFNAME.1 $MYIPADDR/24
+	sudo ip link del link $IFNAME address $MYMACADDR $IFNAME.1 type macvlan
+	sudo ip link add link $IFNAME address $MYMACADDR $IFNAME.1 type macvlan
+	sudo ip address add dev $IFNAME.1 $MYIPADDR/24
+	sudo ip link set $IFNAME up
+	sudo ip link set $IFNAME.1 up
+
+    sudo ip r add 10.0.10.0/24 dev $IFNAME.1
+}
+
+ip_pc2_set2()
+{
+	echo "ip link, address set for pc2"
+    MYIPADDR="10.0.10.11"
+    MYMACADDR="96:63:37:58:22:11"
+
+    sudo ip link set $IFNAME down
+	sudo ip address del dev $IFNAME.1 $MYIPADDR/24
+	sudo ip link del link $IFNAME address $MYMACADDR $IFNAME.1 type macvlan
+	sudo ip link add link $IFNAME address $MYMACADDR $IFNAME.1 type macvlan
+	sudo ip address add dev $IFNAME.1 $MYIPADDR/24
+	sudo ip r add address add dev $IFNAME.1 $MYIPADDR/24
+	sudo ip link set $IFNAME up
+	sudo ip link set $IFNAME.1 up
+
+    sudo ip r add 10.0.10.0/24 dev $IFNAME.1
+
+}
+
+
+ip_pc_clear()
+{
+    MYIPADDR="10.0.10.10"
+    MYMACADDR="96:63:37:58:11:11"
+    URIPADDR="10.0.10.11"
+    URMACADDR="96:63:37:58:22:11"
+    sudo ip link set $IFNAME down
+	sudo ip address del dev $IFNAME.1 $MYIPADDR/24
+	sudo ip address del dev $IFNAME.1 $URIPADDR/24
+	sudo ip link del link $IFNAME address $URMACADDR $IFNAME.1 type macvlan
+	sudo ip link del link $IFNAME address $MYMACADDR $IFNAME.1 type macvlan
+	sudo ip link set $IFNAME up
+
+}
+
