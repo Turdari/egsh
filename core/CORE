@@ -17,8 +17,10 @@ export EGSH_CTX_PKG_LIB ;
 
 SYNCORE()
 {
-    for i in $(find $EGSH_USR_ESYNC)
+    for i in $(find $EGSH_USR_ESYNC -type l )
     do :
+        sh $i issync &> /dev/null
+        test $? -eq 0 || echo "<$i> sync incomplete "
         # run script.sh checkinstall, if yes sync
     done
 }
@@ -44,14 +46,18 @@ case $1 in
 		then 	
             echo "INCLUDE"
 			if [ -f $EGSH_CTX_ESYNC/$2 ] ; then
-			ln -s $EGSH_CTX_ESYNC/$2 $EGSH_USR_ESYNC
-			exit
+			    ln -s $EGSH_CTX_ESYNC/$2 $EGSH_USR_ESYNC
+                sh $EGSH_CTX_ESYNC/$2 dosync 
+                return 0
 			fi
 
 			if [ -f $2 ] ; then
-			ln -s $(realpath $2) $EGSH_USR_ESYNC
-			exit
+			    ln -s $(realpath $2) $EGSH_USR_ESYNC
+                sh $(realpath $2) dosync 
+                return 0
 			fi
+
+
 		else
             # show where source is originated with ln -s 
             echo "CURRENTLY INCLUDED :"
@@ -75,7 +81,7 @@ case $1 in
 	;;
 esac
 	fi
-	return
+	return 0
 }
 
 EGSH()
@@ -159,7 +165,6 @@ esac
 ## Show Breif Status ##
 echo "Envrionment: $(ls $EGSH_USR_ESYNC ) "
 echo "Script: $(ls $EGSH_USR_INC )"
-echo ""
 # Use included script to check envsync
 SYNCORE 
 # Use included script to add function
@@ -178,7 +183,7 @@ CMDMAXNUM=${#CMDLIST[@]}
 CMDLINE=($@)
 case $# in
 	0 )
-#		echo "<COMMAND_LIST>:"
+		echo "< COMMAND >"
 		for (( i=0 ; i < $CMDMAXNUM ; i++ )) 
 		do echo $i ${CMDLIST[$i]}
 		done
@@ -189,7 +194,6 @@ case $# in
 		exit 0
 	;;
 	* )	
-#		echo "<COMMAND_START>:"
 		CMDFIRST=$( echo $1 | grep -wP "\d*" )
 		if [ -z $CMDFIRST ]
 		then 	#echo "[ CMD ARG : $1 ]"
