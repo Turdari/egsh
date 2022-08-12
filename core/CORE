@@ -14,17 +14,6 @@ export EGSH_CTX_ESYNC_LIB ;
 export EGSH_CTX_DCMD_LIB ;
 export EGSH_CTX_PKG_LIB ;
 
-
-SYNCORE()
-{
-    for i in $(find $EGSH_USR_ESYNC -type l )
-    do :
-        sh $i issync &> /dev/null
-        test $? -eq 0 || echo "<$i> sync incomplete "
-        # run script.sh checkinstall, if yes sync
-    done
-}
-
 ESYNC()
 {
 	echo "< ${FUNCNAME[0]} - Environment sync >"
@@ -38,7 +27,8 @@ case $1 in
 	list | ls )
 		echo "Available environment script"
 		EGSH_FILE_LIST=( $( ls -p $EGSH_CTX_ESYNC | grep -v "/$" ) )
-		echo ":${EGSH_FILE_LIST[@]}"
+        #https://unix.stackexchange.com/questions/569435/how-do-i-convert-a-single-column-to-3-columns
+		echo "${EGSH_FILE_LIST[@]}" | tr ' ' '\n' | pr -aT4
 	;;
 	include | in )
 		echo "Usage : include(in) [ filename ]"
@@ -56,24 +46,22 @@ case $1 in
                 sh $(realpath $2) dosync 
                 return 0
 			fi
-
-
-		else
-            # show where source is originated with ln -s 
-            echo "CURRENTLY INCLUDED :"
-            ls -lA $EGSH_USR_ESYNC
 		fi
 	;;
 	exclude | ex )
-		echo "Usage : exclude(ex) < filename >"
-		if [ ! -z $2 ] && [ -f $EGSH_USR_ESYNC/$(basename $2) ]
+		if [ ! -z $2 ] || [ -f $EGSH_USR_ESYNC/$(basename $2) ]
 		then 	
             echo "EXCLUDE $2"
-			rm $EGSH_USR_ESYNC/$2
+			rm $EGSH_USR_ESYNC/$(basename $2)
         fi
 	;;
 	sync )
-        SYNCORE
+        for i in $(find $EGSH_USR_ESYNC -type l )
+        do :
+            sh $i dosync
+            test $? -eq 0 || echo "<$i> sync incomplete "
+            # run script.sh checkinstall, if yes sync
+        done
     ;;
 	* )	
 		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
@@ -96,8 +84,8 @@ case $1 in
 	list | ls )
 		echo "Available shell script"
 		EGSH_FILE_LIST=( $( ls -p $EGSH_CTX_SRC | grep -v "/$" ) )
-		#EGSH_FILE_LIST=( $( find $EGSH_CTX_SRC | grep -v "/$" ) )
-		echo ":${EGSH_FILE_LIST[@]}"
+        #https://unix.stackexchange.com/questions/569435/how-do-i-convert-a-single-column-to-3-columns
+		echo "${EGSH_FILE_LIST[@]}" | tr ' ' '\n' | pr -aT4
 	;;
 	include | in )
 		echo "Usage : include(in) [ filename ]"
@@ -112,12 +100,6 @@ case $1 in
 			ln -s $(realpath $2) $EGSH_USR_INC
 			exit
 			fi
-
-		else
-            echo "CURRENTLY INCLUDED :"
-            ls -lA $EGSH_USR_INC
-#			INCLUDE_CMDLIST=( $( ls -p $EGSH_USR_INC | grep -v / ) )
-#			echo ${INCLUDE_CMDLIST[@]}
 		fi
 	;;
 	exclude | ex )
@@ -166,7 +148,12 @@ esac
 echo "Envrionment: $(ls $EGSH_USR_ESYNC ) "
 echo "Script: $(ls $EGSH_USR_INC )"
 # Use included script to check envsync
-SYNCORE 
+for i in $(find $EGSH_USR_ESYNC -type l )
+do :
+    sh $i issync &> /dev/null
+    test $? -eq 0 || echo "<$i> sync incomplete "
+    # run script.sh checkinstall, if yes sync
+done
 # Use included script to add function
 for i in $( ls -p $EGSH_USR_INC | grep -v / )
 do 	source $EGSH_USR_INC/$i 
