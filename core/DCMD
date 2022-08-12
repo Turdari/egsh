@@ -8,7 +8,7 @@ export EGSH_USR_SRC ;
 export EGSH_USR_ENV ;
 
 
-export EGSH_CTX_ENV_LIB ;    
+export EGSH_CTX_ESYNC_LIB ;    
 export EGSH_CTX_DCMD_LIB ;
 export EGSH_CTX_PKG_LIB ;
 

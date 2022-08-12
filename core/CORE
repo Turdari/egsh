@@ -7,31 +7,98 @@ export EGSH_DIR ;
 export EGSH_VERSION ;
 export EGSH_USR_DIR ;
 export EGSH_USR_INC ;
-export EGSH_USR_SRC ;
-export EGSH_USR_ENV ;
+export EGSH_USR_ESYNC ;
 export EGSH_USR_DCMD ;
-
-export EGSH_CTX_ENV_LIB ;    
+export EGSH_CTX_ESYNC ;
+export EGSH_CTX_ESYNC_LIB ;    
 export EGSH_CTX_DCMD_LIB ;
 export EGSH_CTX_PKG_LIB ;
+
+
+SYNCORE()
+{
+    for i in $(find $EGSH_USR_ESYNC)
+    do :
+        # run script.sh checkinstall, if yes sync
+    done
+}
+
+ESYNC()
+{
+	echo "< ${FUNCNAME[0]} - Environment sync >"
+	if [ -z $1 ] ; 
+	then
+		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
+		echo "CMD := { list(ls) | include(in) | exclude(ex) | sync }"
+	else
+
+case $1 in
+	list | ls )
+		echo "Available environment script"
+		EGSH_FILE_LIST=( $( ls -p $EGSH_CTX_ESYNC | grep -v "/$" ) )
+		echo ":${EGSH_FILE_LIST[@]}"
+	;;
+	include | in )
+		echo "Usage : include(in) [ filename ]"
+		if [ ! -z $2 ] 
+		then 	
+            echo "INCLUDE"
+			if [ -f $EGSH_CTX_ESYNC/$2 ] ; then
+			ln -s $EGSH_CTX_ESYNC/$2 $EGSH_USR_ESYNC
+			exit
+			fi
+
+			if [ -f $2 ] ; then
+			ln -s $(realpath $2) $EGSH_USR_ESYNC
+			exit
+			fi
+		else
+            # show where source is originated with ln -s 
+            echo "CURRENTLY INCLUDED :"
+            ls -lA $EGSH_USR_ESYNC
+		fi
+	;;
+	exclude | ex )
+		echo "Usage : exclude(ex) < filename >"
+		if [ ! -z $2 ] && [ -f $EGSH_USR_ESYNC/$(basename $2) ]
+		then 	
+            echo "EXCLUDE $2"
+			rm $EGSH_USR_ESYNC/$2
+        fi
+	;;
+	sync )
+        SYNCORE
+    ;;
+	* )	
+		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
+		echo "CMD := { list(ls) | include(in) | exclude(ex) | sync }"
+	;;
+esac
+	fi
+	return
+}
 
 EGSH()
 {
 	echo "< ${FUNCNAME[0]} - egsh manager >"
-	if [ ! -z $1 ] ; then 
+	if [ -z $1 ] ; 
+	then
+        echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
+		echo "CMD := { list(ls) | include(in) | exclude(ex) | install(ins) | remove(rm) }"
+    else
 case $1 in
 	list | ls )
-		echo "ALL_FILE_LIST :"
-		EGSH_FILE_LIST=( $( ls -p $EGSH_USR_SRC | grep -v "/$" ) )
-		#EGSH_FILE_LIST=( $( find $EGSH_USR_SRC | grep -v "/$" ) )
-		echo ${EGSH_FILE_LIST[@]}
+		echo "Available shell script"
+		EGSH_FILE_LIST=( $( ls -p $EGSH_CTX_SRC | grep -v "/$" ) )
+		#EGSH_FILE_LIST=( $( find $EGSH_CTX_SRC | grep -v "/$" ) )
+		echo ":${EGSH_FILE_LIST[@]}"
 	;;
 	include | in )
 		echo "Usage : include(in) [ filename ]"
 		if [ ! -z $2 ] 
 		then 	echo "INCLUDE"
-			if [ -f $EGSH_USR_SRC/$2 ] ; then
-			ln -s $EGSH_USR_SRC/$2 $EGSH_USR_INC
+			if [ -f $EGSH_CTX_SRC/$2 ] ; then
+			ln -s $EGSH_CTX_SRC/$2 $EGSH_USR_INC
 			exit
 			fi
 
@@ -40,11 +107,11 @@ case $1 in
 			exit
 			fi
 
-		else 	echo "CURRENT INCLUDED :"
-			INCLUDE_CMDLIST=( $( ls -p $EGSH_USR_INC | grep -v / ) )
-			INCLUDE_CMDMAXNUM=${#INCLUDE_CMDLIST[@]}
-			echo ${INCLUDE_CMDLIST[@]}
-			#echo $INCLUDE_CMDMAXNUM
+		else
+            echo "CURRENTLY INCLUDED :"
+            ls -lA $EGSH_USR_INC
+#			INCLUDE_CMDLIST=( $( ls -p $EGSH_USR_INC | grep -v / ) )
+#			echo ${INCLUDE_CMDLIST[@]}
 		fi
 	;;
 	exclude | ex )
@@ -54,7 +121,7 @@ case $1 in
 			rm $EGSH_USR_INC/$2
 		else 	echo "CURRENT EXCLUDED :"
 			INCLUDE_CMDLIST=( $( ls -p $EGSH_USR_INC | grep -v / ) )
-			EXCLUDE_CMDLIST=( $( ls -p $EGSH_USR_SRC | grep -v / ) )
+			EXCLUDE_CMDLIST=( $( ls -p $EGSH_CTX_SRC | grep -v / ) )
 	
 			#remove included cmd from array
 			for i in ${INCLUDE_CMDLIST[@]}
@@ -85,30 +152,33 @@ case $1 in
 		echo "CMD := { list(ls) | include(in) | exclude(ex) | install(ins) | remove(rm) }"
 	;;
 esac
-	else	echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
-		echo "CMD := { list(ls) | include(in) | exclude(ex) | install(ins) | remove(rm) }"
-	fi
+    fi
 	return
 }
 
-echo "<INCLUDED>:"
-ls $EGSH_USR_INC
+## Show Breif Status ##
+echo "Envrionment: $(ls $EGSH_USR_ESYNC ) "
+echo "Script: $(ls $EGSH_USR_INC )"
+echo ""
+# Use included script to check envsync
+SYNCORE 
+# Use included script to add function
 for i in $( ls -p $EGSH_USR_INC | grep -v / )
 do 	source $EGSH_USR_INC/$i 
 done
 
-#fix egsh numbering as 0
-CMDLIST=( EGSH )
+## Launch Command ##
+CMDLIST=( "EGSH" "ESYNC" )
 TCMDLIST=( $( declare -F | sed 's/declare -f //g' ) )
 TCMDLIST=( "${TCMDLIST[@]/EGSH}" )
+TCMDLIST=( "${TCMDLIST[@]/ESYNC}" )
+TCMDLIST=( "${TCMDLIST[@]/SYNCORE}" )
 CMDLIST+=( ${TCMDLIST[@]} )
-
 CMDMAXNUM=${#CMDLIST[@]}
 CMDLINE=($@)
-
 case $# in
 	0 )
-		echo "<COMMAND_LIST>:"
+#		echo "<COMMAND_LIST>:"
 		for (( i=0 ; i < $CMDMAXNUM ; i++ )) 
 		do echo $i ${CMDLIST[$i]}
 		done
@@ -119,7 +189,7 @@ case $# in
 		exit 0
 	;;
 	* )	
-		echo "<COMMAND_START>:"
+#		echo "<COMMAND_START>:"
 		CMDFIRST=$( echo $1 | grep -wP "\d*" )
 		if [ -z $CMDFIRST ]
 		then 	#echo "[ CMD ARG : $1 ]"
