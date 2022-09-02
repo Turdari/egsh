@@ -1,7 +1,7 @@
 #!/bin/bash
 CFLOWCONF=/home/$USER/.cflowconf
 
-debug_cflow_env_show()
+devtool_cflow_env_show()
 {
 	echo "<${FUNCNAME[0]}>"	
 	if [ -f $CFLOWCONF ] 
@@ -13,8 +13,8 @@ debug_cflow_env_show()
 	return
 }
 
-
-debug_cflow_env_init(){
+devtool_cflow_env_init()
+{
 	#do not use single bar "-"
 	CFLOW_ENV_DEPTH="--depth=3"
 	CFLOW_ENV_TREE=" "
@@ -73,7 +73,8 @@ debug_cflow_env_init(){
 	return 0
 }
 
-debug_cflow(){
+devtool_cflow()
+{
 	echo "${FUNCNAME[0]} <target function> < target dir >"
 #	CFLOWFILES=$(cat /tmp/cflowfilelist)		
 	[ -z $1 ] && exit -1
@@ -91,8 +92,7 @@ debug_cflow(){
 	return 0
 }
 
-
-debug_kernel_file_extract()
+devtool_kernel_file_extract()
 {
 	echo "<${FUNCNAME[0]}> <kernel directory>"
 
@@ -107,7 +107,8 @@ debug_kernel_file_extract()
 	return
 }
 
-debug_cflow_new(){
+devtool_cflow_new()
+{
 	echo "<${FUNCNAME[0]}>"
 	CMD_ARG=( $@ )
 
@@ -123,5 +124,21 @@ debug_cflow_new(){
 
 	return
 }
+
+devtool_sed_atob()
+{
+	echo "<${FUNCNAME[0]}>"
+	CMD_ARG=( $@ )
+
+    if [ ${#CMD_ARG[@]} -ge 3 ]
+    then :
+        sed -i "s/${CMD_ARG[0]}/${CMD_ARG[1]}/g" ${CMD_ARG[@]:2}
+    else :
+        echo "Usage:"
+		printf "\t${FUNCNAME[0]} <A> <B> <files...> \n" 
+    fi
+    
+}
+
 
 
