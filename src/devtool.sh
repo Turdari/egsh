@@ -114,9 +114,8 @@ devtool_cflow_new()
 
 	if ( echo "$1" | grep -qP "[a-zA-Z_-]+" ) ; then	
 		#echo "${CMD_ARG[@]:2}"
-		echo "cflow -i _s -m <function name> [cflow option] \$( find $PWD | grep -P \"\.+[ch]\") "
-		echo "cflow -i _s -m ${CMD_ARG[@]} $( find $PWD | grep -P ".+\.[ch]$" | tr '\n' ' ' )"
-		cflow -i _s -m ${CMD_ARG[@]} $( find $PWD | grep -P ".+\.[ch]$" | tr '\n' ' ' )
+		echo "cflow -m ${CMD_ARG[@]} $( find $PWD -type f | grep "\.[ch]$" )"
+		cflow -m ${CMD_ARG[@]} $( find $PWD -type f | grep "\.[ch]$" )
 	else
 		echo "Usage:"
 		printf "\t${FUNCNAME[0]} <function name> [cflow option] \n"

@@ -12,6 +12,35 @@ set tags+=$HOME/.tagsdir/tags
 "autocmd BufWinLeave *.* mkview
 "autocmd BufWinEnter *.* silent loadview 
 
+" Disable Compile, But Enable Debug
+au BufRead,BufNewFile *.c.ref set syntax=c
+au BufRead,BufNewFile *.h.ref set syntax=c
+
+"function for debug
+function! ToggleVerbose()
+    if !&verbose
+        set verbosefile=~/vim.log
+        set verbose=15
+    else
+        set verbose=0
+        set verbosefile=
+    endif
+endfunction
+
+"plugin test... , it works!
+"set runtimepath^=~/.vim/bundle/CompleteParameter.vim
+"vim -c 'helptag ~/.vim/bundle/CompleteParameter.vim/doc' -c qa!
+
+"For trimming F3 search value... useful when loading it into terminal
+function! TrimExactMatch()
+    let @/ = substitute(@/, '\\[<>]' , "", "g")
+endfunction
+nnoremap <silent> <C-k>t :call TrimExactMatch()<cr>
+
+"Implement Full/Minimal screen feature
+nnoremap <silent> <C-k>f <C-w>_
+nnoremap <silent> <C-k>s :resize 1<cr>
+
 ""check csocpe functionality available
 "if has('cscope')
 "  set cscopetag cscopeverbose
@@ -170,21 +199,6 @@ set tags+=$HOME/.tagsdir/tags
 "   
 "   endif
 
-"function for debug
-function! ToggleVerbose()
-    if !&verbose
-        set verbosefile=~/vim.log
-        set verbose=15
-    else
-        set verbose=0
-        set verbosefile=
-    endif
-endfunction
-
-"plugin test... , it works!
-"set runtimepath^=~/.vim/bundle/CompleteParameter.vim
-"vim -c 'helptag ~/.vim/bundle/CompleteParameter.vim/doc' -c qa!
-
 "******************
 "version marker 700
 "******************
@@ -270,6 +284,12 @@ function! s:ToggleTerminal() abort
     endif
 endfunction
 
-"implement hide tab feature ...
+"implement toggle term feature ...
 nnoremap <silent> <C-k><C-k> :call <SID>ToggleTerminal()<CR>
 tnoremap <silent> <C-k><C-k> <C-w>N:call <SID>ToggleTerminal()<CR>
+
+"Implement Full/Minimal screen feature.
+tnoremap <silent> <C-k>f <C-w>_
+tnoremap <silent> <C-k>s <C-w>N:resize 1<cr>i
+
+
