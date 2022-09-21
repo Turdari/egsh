@@ -1,22 +1,26 @@
-syntax on
+"FUNCTION LIST"
+"Function Can be splitted over versions...
+"01 for debug....
+"02
+"03
+"FF etc.. not important
 
 "******************************
 "version marker UNKNOWN version
 "******************************
+syntax on
 set tabstop=4
 set shiftwidth=4
 set expandtab
 set hlsearch
 set autochdir
 set tags+=$HOME/.tagsdir/tags
-"autocmd BufWinLeave *.* mkview
-"autocmd BufWinEnter *.* silent loadview 
 
-" Disable Compile, But Enable Debug
+"FUNCTION_FF Disable Compile, But Enable Debug
 au BufRead,BufNewFile *.c.ref set syntax=c
 au BufRead,BufNewFile *.h.ref set syntax=c
 
-"function for debug
+"FUNCTION_01 function for debug
 function! ToggleVerbose()
     if !&verbose
         set verbosefile=~/vim.log
@@ -31,16 +35,17 @@ endfunction
 "set runtimepath^=~/.vim/bundle/CompleteParameter.vim
 "vim -c 'helptag ~/.vim/bundle/CompleteParameter.vim/doc' -c qa!
 
-"For trimming F3 search value... useful when loading it into terminal
+"FUNCTION_02  For trimming F3 search value... useful when loading it into terminal
 function! TrimExactMatch()
     let @/ = substitute(@/, '\\[<>]' , "", "g")
 endfunction
 nnoremap <silent> <C-k>t :call TrimExactMatch()<cr>
 
-"Implement Full/Minimal screen feature
+"FUNCTION_03 Implement Full/Minimal screen feature
 nnoremap <silent> <C-k>f <C-w>_
 nnoremap <silent> <C-k>s :resize 1<cr>
 
+"FUNCTION_04
 ""check csocpe functionality available
 "if has('cscope')
 "  set cscopetag cscopeverbose
@@ -199,24 +204,7 @@ nnoremap <silent> <C-k>s :resize 1<cr>
 "   
 "   endif
 
-"******************
-"version marker 700
-"******************
-if v:version < 700
-	finish
-endif
-
-"add tab related feature
-nnoremap <silent> <C-k>l <C-PageDown>
-nnoremap <silent> <C-k>k :tabnew<CR>
-nnoremap <silent> <C-k>h <C-PageUp>
-
-"autocomplete shortcut to ctrl + k
-set completeopt=longest,menuone
-inoremap <C-k> <C-n>
-
-
-" Peaking function.. 
+" FUNCTION_ Peaking function.. 
 " https://stackoverflow.com/questions/63299580/make-vim-keyword-completion-menu-show-function-parameters
 " get the parameters of a function and put it in a popup using ctags
 func GetFuncParamsFromTag()
@@ -242,8 +230,58 @@ func GetFuncParamsFromTag()
     call popup_atcursor(getreg('0'), #{moved: [0, 80], highlight: 'WildMenu'})
     silent execute "normal \<c-t>"
 endfunc
-"nnoremap <silent> <leader>? :call GetFuncParamsFromTag()<cr>
 nnoremap <silent> <C-k>p :call GetFuncParamsFromTag()<cr>
+
+
+"******************
+"version marker 700
+"******************
+if v:version < 700
+	finish
+endif
+
+"FUNCTION_05 add tab related feature
+if v:version > 700
+    " Switch to last-active tab
+    if !exists('g:Lasttab')
+        let g:Lasttab = 1
+        let g:Lasttab_backup = 1
+    endif
+    autocmd! TabLeave * let g:Lasttab_backup = g:Lasttab | let g:Lasttab = tabpagenr()
+    autocmd! TabClosed * let g:Lasttab = g:Lasttab_backup
+    nmap <silent> <C-k>` :exe "tabn " . g:Lasttab<cr>
+
+    nnoremap <silent> <C-k>l <C-PageDown>
+    nnoremap <silent> <C-k>k :tabnew<CR>
+    nnoremap <silent> <C-k>h <C-PageUp>
+    nnoremap <silent> <C-k>1 :tabnext 1<CR>
+    nnoremap <silent> <C-k>2 :tabnext 2<CR>
+    nnoremap <silent> <C-k>3 :tabnext 3<CR>
+    nnoremap <silent> <C-k>4 :tabnext 4<CR>
+    nnoremap <silent> <C-k>5 :tabnext 5<CR>
+    nnoremap <silent> <C-k>6 :tabnext 6<CR>
+    nnoremap <silent> <C-k>7 :tabnext 7<CR>
+    nnoremap <silent> <C-k>8 :tabnext 8<CR>
+    nnoremap <silent> <C-k>9 :tabnext 9<CR>
+if v:version > 800
+    tnoremap <silent> <C-k>l <C-w>:tabn<CR>
+    tnoremap <silent> <C-k>k <C-w>:tabnew<CR>
+    tnoremap <silent> <C-k>h <C-w>:tabp<CR>
+    tnoremap <silent> <C-k>1 <C-w>:tabnext 1<CR>
+    tnoremap <silent> <C-k>2 <C-w>:tabnext 2<CR>
+    tnoremap <silent> <C-k>3 <C-w>:tabnext 3<CR>
+    tnoremap <silent> <C-k>4 <C-w>:tabnext 4<CR>
+    tnoremap <silent> <C-k>5 <C-w>:tabnext 5<CR>
+    tnoremap <silent> <C-k>6 <C-w>:tabnext 6<CR>
+    tnoremap <silent> <C-k>7 <C-w>:tabnext 7<CR>
+    tnoremap <silent> <C-k>8 <C-w>:tabnext 8<CR>
+    tnoremap <silent> <C-k>9 <C-w>:tabnext 9<CR>
+endif
+endif
+
+"FUNCTION_06 autocomplete shortcut to ctrl + k
+set completeopt=longest,menuone
+inoremap <C-k> <C-n>
 
 
 "******************
@@ -266,7 +304,7 @@ endif
 
 autocmd TabNew * let t:term_buf_nr = -1
 
-"when just starting.. there is no tab assigned so ...
+"FUNCTION when just starting.. there is no tab assigned so ...
 let t:term_buf_nr = -1
 function! s:ToggleTerminal() abort
     if t:term_buf_nr == -1
@@ -284,12 +322,17 @@ function! s:ToggleTerminal() abort
     endif
 endfunction
 
-"implement toggle term feature ...
+"FUNCTION implement toggle term feature ...
 nnoremap <silent> <C-k><C-k> :call <SID>ToggleTerminal()<CR>
-tnoremap <silent> <C-k><C-k> <C-w>N:call <SID>ToggleTerminal()<CR>
+tnoremap <silent> <C-k><C-k> <C-w>:call <SID>ToggleTerminal()<CR>
 
-"Implement Full/Minimal screen feature.
+"FUNCTION Implement Full/Minimal screen feature.
 tnoremap <silent> <C-k>f <C-w>_
-tnoremap <silent> <C-k>s <C-w>N:resize 1<cr>i
+tnoremap <silent> <C-k>s <C-w>:resize 1<cr>i
+
+"FUNCTION
+nnoremap <silent> <C-k><C-t> :terminal ++curwin<cr>
+tnoremap <silent> <C-k><C-t> <C-w>:terminal ++curwin<cr>
+
 
 
