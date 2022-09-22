@@ -22,16 +22,18 @@ helptags ~/.vim/bundle/tagbar/doc
 nmap <F8> :TagbarToggle<CR>
 "FUNCTION_00 set nerdtree...
 if v:version > 700
+    "let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', '\.mp4$','\.avi$','.webm$','.mkv$','\.pdf$', '\.zip$', '\.tar.gz$', '\.rar$']
+    let g:NERDTreeNodeDelimiter = "\u00a0"
 	set runtimepath^=~/.vim/bundle/nerdtree
 	helptags ~/.vim/bundle/nerdtree/doc
 	"nnoremap <leader>n :NERDTreeFocus<CR>
 	nnoremap <silent> <F7> :NERDTreeToggle<CR>
-	nnoremap <silent> <F6> :NERDTreeCWD<CR>
+	nnoremap <F6> :NERDTree %<CR>
 	nnoremap <silent> <C-k>f :NERDTreeFocus<CR>
 	"nnoremap <silent> <C-k>f :NERDTreeFind<CR>
 	if v:version > 800
 		tnoremap <silent> <F7> <C-w>:NERDTreeToggle<CR>
-		tnoremap <silent> <F6> <C-w>:NERDTreeCWD<CR>
+		tnoremap <F6> <C-w>:NERDTreeCWD<CR>
 		tnoremap <silent> <C-k>f <C-w>:NERDTreeFocus<CR>
 	endif
 endif
