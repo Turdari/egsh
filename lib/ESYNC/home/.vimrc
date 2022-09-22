@@ -233,6 +233,10 @@ endfunc
 nnoremap <silent> <C-k>p :call GetFuncParamsFromTag()<cr>
 
 
+
+
+
+
 "******************
 "version marker 700
 "******************
@@ -294,6 +298,22 @@ endif
 set runtimepath^=~/.vim/bundle/tagbar
 helptags ~/.vim/bundle/tagbar/doc
 nmap <F8> :TagbarToggle<CR>
+
+"set nerdtree...
+if v:version > 700
+	set runtimepath^=~/.vim/bundle/nerdtree
+	helptags ~/.vim/bundle/nerdtree/doc
+	"nnoremap <leader>n :NERDTreeFocus<CR>
+	"nnoremap <C-n> :NERDTree<CR>
+	nnoremap <C-n> :NERDTreeToggle $PWD<CR>
+	"nnoremap <C-f> :NERDTreeFind<CR>
+	if v:version > 800
+		"tnoremap <C-n> <C-w>:NERDTree<CR>
+		tnoremap <C-n> <C-w>:NERDTreeToggle $PWD<CR>
+		"tnoremap <C-f> <C-w>:NERDTreeFind<CR>
+	endif
+endif
+
 
 "******************
 "version marker 800
