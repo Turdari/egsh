@@ -59,13 +59,15 @@ do
                 read -p "Do you want to overwrite? (y/n)" yn
                 case $yn in
                     y | Y )
-#                        #sudo chmod -R 777 $ESYNCVIMBUNDLE/sync-term-cwd/*
-                        rm -f $EGSH_USR_SHSRC/synctermcwd.sh
-                        git clone https://github.com/tyru/sync-term-cwd.vim sync-term-cwd
-                        ln -s $VIMBUNDLE/sync-term-cwd/macros/synctermcwd.sh $EGSH_USR_SHSRC/synctermcwd.sh
-
-#                        cp -r $ESYNCVIMBUNDLE/sync-term-cwd $VIMBUNDLE/sync-term-cwd
-#                        ln -s $ESYNCVIMBUNDLE/sync-term-cwd/macros/synctermcwd.sh $EGSH_USR_SHSRC/synctermcwd.sh
+                        if [ -d  $VIMBUNDLE/sync-term-cwd ] ; 
+                        then
+                            rm -f $EGSH_USR_SHSRC/synctermcwd.sh
+                            ln -s $VIMBUNDLE/sync-term-cwd/macros/synctermcwd.sh $EGSH_USR_SHSRC/synctermcwd.sh
+                        else 
+                            git clone https://github.com/tyru/sync-term-cwd.vim $VIMBUNDLE/sync-term-cwd
+                            rm -f $EGSH_USR_SHSRC/synctermcwd.sh
+                            ln -s $VIMBUNDLE/sync-term-cwd/macros/synctermcwd.sh $EGSH_USR_SHSRC/synctermcwd.sh
+                        fi 
                     ;;
                     n | N )
                     ;;
