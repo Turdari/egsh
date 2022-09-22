@@ -1,5 +1,5 @@
 "FUNCTION LIST"
-"Function Can be splitted over versions...
+"00 plugin import
 "01 for debug....
 "02
 "03
@@ -15,6 +15,33 @@ set expandtab
 set hlsearch
 set autochdir
 set tags+=$HOME/.tagsdir/tags
+
+"FUNCTION_00 set tagbar at f8 and make help work
+set runtimepath^=~/.vim/bundle/tagbar
+helptags ~/.vim/bundle/tagbar/doc
+nmap <F8> :TagbarToggle<CR>
+"FUNCTION_00 set nerdtree...
+if v:version > 700
+	set runtimepath^=~/.vim/bundle/nerdtree
+	helptags ~/.vim/bundle/nerdtree/doc
+	"nnoremap <leader>n :NERDTreeFocus<CR>
+	nnoremap <silent> <F7> :NERDTreeToggle<CR>
+	nnoremap <silent> <F6> :NERDTreeCWD<CR>
+	nnoremap <silent> <C-k>f :NERDTreeFocus<CR>
+	"nnoremap <silent> <C-k>f :NERDTreeFind<CR>
+	if v:version > 800
+		tnoremap <silent> <F7> <C-w>:NERDTreeToggle<CR>
+		tnoremap <silent> <F6> <C-w>:NERDTreeCWD<CR>
+		tnoremap <silent> <C-k>f <C-w>:NERDTreeFocus<CR>
+	endif
+endif
+"FUNCTION_00 term sync feature .... should be added here
+if v:version < 900
+    set runtimepath^=~/.vim/bundle/sync-term-cwd
+    helptags ~/.vim/bundle/sync-term-cwd/doc
+else
+    set autoshelldir
+endif
 
 "FUNCTION_FF Disable Compile, But Enable Debug
 au BufRead,BufNewFile *.c.ref set syntax=c
@@ -39,11 +66,15 @@ endfunction
 function! TrimExactMatch()
     let @/ = substitute(@/, '\\[<>]' , "", "g")
 endfunction
-nnoremap <silent> <C-k>t :call TrimExactMatch()<cr>
+nnoremap <silent> <C-k>/ :call TrimExactMatch()<cr>
 
 "FUNCTION_03 Implement Full/Minimal screen feature
-nnoremap <silent> <C-k>f <C-w>_
-nnoremap <silent> <C-k>s :resize 1<cr>
+nnoremap <silent> <C-k>= <C-w>_
+nnoremap <silent> <C-k>- :resize 1<cr>
+if v:version > 800
+    tnoremap <silent> <C-k>= <C-w>_
+    tnoremap <silent> <C-k>- <C-w>:resize 1<cr>
+endif
 
 "FUNCTION_04
 ""check csocpe functionality available
@@ -287,32 +318,13 @@ endif
 set completeopt=longest,menuone
 inoremap <C-k> <C-n>
 
-
 "******************
 "version marker 731
 "******************
 if v:version < 731
 	finish
 endif
-"set tagbar at f8 and make help work
-set runtimepath^=~/.vim/bundle/tagbar
-helptags ~/.vim/bundle/tagbar/doc
-nmap <F8> :TagbarToggle<CR>
 
-"set nerdtree...
-if v:version > 700
-	set runtimepath^=~/.vim/bundle/nerdtree
-	helptags ~/.vim/bundle/nerdtree/doc
-	"nnoremap <leader>n :NERDTreeFocus<CR>
-	"nnoremap <C-n> :NERDTree<CR>
-	nnoremap <C-n> :NERDTreeToggle $PWD<CR>
-	"nnoremap <C-f> :NERDTreeFind<CR>
-	if v:version > 800
-		"tnoremap <C-n> <C-w>:NERDTree<CR>
-		tnoremap <C-n> <C-w>:NERDTreeToggle $PWD<CR>
-		"tnoremap <C-f> <C-w>:NERDTreeFind<CR>
-	endif
-endif
 
 
 "******************
@@ -322,9 +334,8 @@ if v:version < 800
 	finish
 endif
 
-autocmd TabNew * let t:term_buf_nr = -1
-
 "FUNCTION when just starting.. there is no tab assigned so ...
+autocmd TabNew * let t:term_buf_nr = -1
 let t:term_buf_nr = -1
 function! s:ToggleTerminal() abort
     if t:term_buf_nr == -1
@@ -345,10 +356,6 @@ endfunction
 "FUNCTION implement toggle term feature ...
 nnoremap <silent> <C-k><C-k> :call <SID>ToggleTerminal()<CR>
 tnoremap <silent> <C-k><C-k> <C-w>:call <SID>ToggleTerminal()<CR>
-
-"FUNCTION Implement Full/Minimal screen feature.
-tnoremap <silent> <C-k>f <C-w>_
-tnoremap <silent> <C-k>s <C-w>:resize 1<cr>i
 
 "FUNCTION
 nnoremap <silent> <C-k><C-t> :terminal ++curwin<cr>

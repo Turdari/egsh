@@ -7,6 +7,7 @@ export EGSH_DIR ;
 export EGSH_VERSION ;
 export EGSH_USR_DIR ;
 export EGSH_USR_INC ;
+export EGSH_USR_SHSRC ;
 export EGSH_USR_ESYNC ;
 export EGSH_USR_DCMD ;
 export EGSH_CTX_ESYNC ;
@@ -150,7 +151,8 @@ echo "Script: $(ls $EGSH_USR_INC )"
 # Use included script to check envsync
 for i in $(find $EGSH_USR_ESYNC -type l )
 do :
-    sh $i issync &> /dev/null
+    sh $i issync 
+    #sh $i issync &> /dev/null
     test $? -eq 0 || echo "<$i> sync incomplete "
     # run script.sh checkinstall, if yes sync
 done

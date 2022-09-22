@@ -26,7 +26,7 @@ UNAME=$USER                         # 2.1
 EGSH_USR_DIR=$UHOME/.egsh           #
 EGSH_USR_DCMD=$UHOME/.egsh/dcmd     # local user 
 EGSH_USR_INC=$UHOME/.egsh/include   # local user 
-#EGSH_USR_SRC=$UHOME/.egsh/egsh/src  # Set 
+EGSH_USR_SHSRC=$UHOME/.egsh/shsrc  # Set 
 EGSH_USR_ESYNC=$UHOME/.egsh/esync   # for local user
 
 #egsh
@@ -82,6 +82,7 @@ then
 		mkdir -p $UHOME/.egsh/dcmd
 		mkdir -p $UHOME/.egsh/include
 		mkdir -p $UHOME/.egsh/esync
+		mkdir -p $UHOME/.egsh/shsrc
         ln -s $EGSH_DIR $UHOME/.egsh/egsh
 		echo "$EGSH_DIR copied"
 	else	
@@ -100,6 +101,7 @@ export EGSH_DIR ;
 export EGSH_VERSION ;
 export EGSH_USR_DIR ;
 export EGSH_USR_INC ;
+export EGSH_USR_SHSRC ;
 export EGSH_USR_ESYNC ;
 export EGSH_USR_DCMD ;
 export EGSH_CTX_SRC ;
