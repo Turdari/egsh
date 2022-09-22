@@ -1,9 +1,0 @@
-[submodule "lib/ESYNC/home/.vim/bundle/nerdtree"]
-	path = lib/ESYNC/home/.vim/bundle/nerdtree
-	url = https://github.com/preservim/nerdtree.git
-[submodule "lib/ESYNC/home/.vim/bundle/sync-term-cwd"]
-	path = lib/ESYNC/home/.vim/bundle/sync-term-cwd
-	url = https://github.com/tyru/sync-term-cwd.vim.git
-[submodule "lib/ESYNC/home/.vim/bundle/tagbar"]
-	path = lib/ESYNC/home/.vim/bundle/tagbar
-	url = https://github.com/preservim/tagbar.git

@@ -146,8 +146,10 @@ esac
 }
 
 ## Show Breif Status ##
-echo "Envrionment: $(ls $EGSH_USR_ESYNC ) "
-echo "Script: $(ls $EGSH_USR_INC )"
+ENVARRAY=( $(ls $EGSH_USR_ESYNC) )
+INCARRAY=( $(ls $EGSH_USR_INC) )
+echo "ENV: ${ENVARRAY[@]}"
+echo "INC: ${INCARRAY[@]}"
 # Use included script to check envsync
 for i in $(find $EGSH_USR_ESYNC -type l )
 do :

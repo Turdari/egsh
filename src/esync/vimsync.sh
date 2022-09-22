@@ -30,9 +30,8 @@ do
                 read -p "Do you want to overwrite? (y/n)" yn
                 case $yn in
                     y | Y )
-                        #sudo chmod -R 777 $ESYNCVIMBUNDLE/tagbar/*
-                        sudo rm -fr $VIMBUNDLE/tagbar
-                        cp -r $ESYNCVIMBUNDLE/tagbar $VIMBUNDLE/tagbar 
+                        git clone https://github.com/preservim/tagbar.git $VIMBUNDLE/tagbar 
+#                        cp -r $ESYNCVIMBUNDLE/tagbar $VIMBUNDLE/tagbar 
                     ;;
                     n | N )
                     ;;
@@ -44,10 +43,10 @@ do
                 echo "SYNC nerdtree"
                 read -p "Do you want to overwrite? (y/n)" yn
                 case $yn in
-                    y | Y )
-                        #sudo chmod -R 777 $ESYNCVIMBUNDLE/nerdtree/*
-                        sudo rm -fr $VIMBUNDLE/nerdtree
-                        cp -r $ESYNCVIMBUNDLE/nerdtree $VIMBUNDLE/nerdtree
+                    y | Y )    
+                        git clone https://github.com/preservim/nerdtree.git $VIMBUNDLE/nerdtree
+#                        #sudo chmod -R 777 $ESYNCVIMBUNDLE/nerdtree/*
+#                        cp -r $ESYNCVIMBUNDLE/nerdtree $VIMBUNDLE/nerdtree
                     ;;
                     n | N )
                     ;;
@@ -60,11 +59,13 @@ do
                 read -p "Do you want to overwrite? (y/n)" yn
                 case $yn in
                     y | Y )
-                        #sudo chmod -R 777 $ESYNCVIMBUNDLE/sync-term-cwd/*
-                        sudo rm -fr $VIMBUNDLE/sync-term-cwd
-                        rm $EGSH_USR_SHSRC/synctermcwd.sh
-                        cp -r $ESYNCVIMBUNDLE/sync-term-cwd $VIMBUNDLE/sync-term-cwd
-                        ln -s $ESYNCVIMBUNDLE/sync-term-cwd/macros/synctermcwd.sh $EGSH_USR_SHSRC/synctermcwd.sh
+#                        #sudo chmod -R 777 $ESYNCVIMBUNDLE/sync-term-cwd/*
+                        rm -f $EGSH_USR_SHSRC/synctermcwd.sh
+                        git clone https://github.com/tyru/sync-term-cwd.vim sync-term-cwd
+                        ln -s $VIMBUNDLE/sync-term-cwd/macros/synctermcwd.sh $EGSH_USR_SHSRC/synctermcwd.sh
+
+#                        cp -r $ESYNCVIMBUNDLE/sync-term-cwd $VIMBUNDLE/sync-term-cwd
+#                        ln -s $ESYNCVIMBUNDLE/sync-term-cwd/macros/synctermcwd.sh $EGSH_USR_SHSRC/synctermcwd.sh
                     ;;
                     n | N )
                     ;;
