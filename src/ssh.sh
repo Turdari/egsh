@@ -12,7 +12,7 @@ ssh_tunnel_client_set_vnc()
 #	while the -N switch tells ssh that we don’t want to execute a remote command. 
 #	The -l switch specifies the remote login name.
 
-	[ ! -z $1 ] && [ ! -z $2 ] && ssh -L 5902:127.0.0.1:5902 -C -N -l $1 $2
+	[ ! -z $1 ] && [ ! -z $2 ] && ssh -L 5901:127.0.0.1:5901 -C -N -l $1 $2
 	#ssh -L 127.0.0.1:5901:127.0.0.1:5901 -C -N -l $1 $2
 	return
 }
