@@ -68,6 +68,7 @@ do
                             rm -f $EGSH_USR_SHSRC/synctermcwd.sh
                             ln -s $VIMBUNDLE/sync-term-cwd/macros/synctermcwd.sh $EGSH_USR_SHSRC/synctermcwd.sh
                         fi 
+			echo "WARN:Restart Your Shell for term-sync"
                     ;;
                     n | N )
                     ;;
