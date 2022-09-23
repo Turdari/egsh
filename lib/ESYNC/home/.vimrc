@@ -35,7 +35,9 @@ if v:version > 700
 
     function! NERDTreeCustomToggle()
         if IsNerdTreeEnabled()
-            :NERDTreeToggle
+            ":NERDTreeToggle
+            let t:customcwd = getcwd()
+            execute "NERDTree " . t:customcwd
         else
             let t:customcwd = getcwd()
             execute "NERDTree " . t:customcwd
@@ -94,7 +96,24 @@ if v:version > 800
     tnoremap <silent> <C-k>- <C-w>:resize 1<cr>
 endif
 
-"FUNCTION_04
+"FUNCTION_?? toggle buffer on ...
+let g:hnrbnum = -1
+function! ToggleHideAndRestoreBuffer()
+    if g:hnrbnum == -1
+        let g:hnrbnum = bufnr('%')
+        hide
+    else 
+        execute "buffer". g:hnrbnum
+        let g:hnrbnum = -1
+    endif
+endfunction 
+nnoremap <silent> <F5> :call ToggleHideAndRestoreBuffer()<CR>
+if v:version > 800
+	tnoremap <silent> <F5> <C-w>:call ToggleHideAndRestoreBuffer()<CR>
+endif
+
+
+"FUNCTION_FF cscope
 ""check csocpe functionality available
 "if has('cscope')
 "  set cscopetag cscopeverbose
@@ -309,8 +328,8 @@ if v:version > 700
     nnoremap <silent> <C-h> <C-PageUp>
     nnoremap <silent> <C-k>l :tabm +1<CR>
     nnoremap <silent> <C-k>h :tabm -1<CR>
+    nnoremap <silent> <C-k>k :tabnew<CR>
 
-    nnoremap <silent> <C-k>t :tabnew<CR>
     nnoremap <silent> <C-k>1 :tabnext 1<CR>
     nnoremap <silent> <C-k>2 :tabnext 2<CR>
     nnoremap <silent> <C-k>3 :tabnext 3<CR>
@@ -325,8 +344,8 @@ if v:version > 800
     tnoremap <silent> <C-h> <C-w>:tabp<CR>
     tnoremap <silent> <C-k>l <C-w>:tabm +1<CR>
     tnoremap <silent> <C-k>h <C-w>:tabm -1<CR>
+    tnoremap <silent> <C-k>k <C-w>:tabnew<CR>
 
-    tnoremap <silent> <C-k>t <C-w>:tabnew<CR>
     tnoremap <silent> <C-k>1 <C-w>:tabnext 1<CR>
     tnoremap <silent> <C-k>2 <C-w>:tabnext 2<CR>
     tnoremap <silent> <C-k>3 <C-w>:tabnext 3<CR>
@@ -384,6 +403,10 @@ endif
 "FUNCTION
 nnoremap <silent> <C-k><C-k> :terminal ++curwin<cr>
 tnoremap <silent> <C-k><C-k> <C-w>:terminal ++curwin<cr>
+
+"FUNCTION_ force close
+nnoremap <silent> <C-k>q :q!<cr>
+tnoremap <silent> <C-k>q <C-w>:q!<cr>
 
 
 
