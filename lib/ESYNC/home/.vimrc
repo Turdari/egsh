@@ -22,18 +22,34 @@ helptags ~/.vim/bundle/tagbar/doc
 nmap <F8> :TagbarToggle<CR>
 "FUNCTION_00 set nerdtree...
 if v:version > 700
-    "let NERDTreeIgnore += ['\.png$','\.jpg$','\.gif$','\.mp3$','\.flac$', '\.ogg$', '\.mp4$','\.avi$','.webm$','.mkv$','\.pdf$', '\.zip$', '\.tar.gz$', '\.rar$']
-    let g:NERDTreeNodeDelimiter = "\u00a0"
 	set runtimepath^=~/.vim/bundle/nerdtree
 	helptags ~/.vim/bundle/nerdtree/doc
+    let g:NERDTreeNodeDelimiter = "\u00a0"
+    let t:customcwd = "nullstr"
+
+    "https://stackoverflow.com/questions/41541648/how-to-check-if-nerdtree-is-open-in-vimscript
+    "toggle for cwd
+    function! IsNerdTreeEnabled()
+        return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
+    endfunction
+
+    function! NERDTreeCustomToggle()
+        if IsNerdTreeEnabled()
+            :NERDTreeToggle
+        else
+            let t:customcwd = getcwd()
+            execute "NERDTree " . t:customcwd
+        endif
+    endfunction
+
 	"nnoremap <leader>n :NERDTreeFocus<CR>
 	nnoremap <silent> <F7> :NERDTreeToggle<CR>
-	nnoremap <F6> :NERDTree %<CR>
+	nnoremap <silent> <F6> :call NERDTreeCustomToggle()<CR>
 	nnoremap <silent> <C-k>f :NERDTreeFocus<CR>
 	"nnoremap <silent> <C-k>f :NERDTreeFind<CR>
 	if v:version > 800
 		tnoremap <silent> <F7> <C-w>:NERDTreeToggle<CR>
-		tnoremap <F6> <C-w>:NERDTreeCWD<CR>
+	    tnoremap <silent> <F6> <C-w>:call NERDTreeCustomToggle()<CR>
 		tnoremap <silent> <C-k>f <C-w>:NERDTreeFocus<CR>
 	endif
 endif
@@ -288,9 +304,13 @@ if v:version > 700
     autocmd! TabClosed * let g:Lasttab = g:Lasttab_backup
     nmap <silent> <C-k>` :exe "tabn " . g:Lasttab<cr>
 
-    nnoremap <silent> <C-k>l <C-PageDown>
-    nnoremap <silent> <C-k>k :tabnew<CR>
-    nnoremap <silent> <C-k>h <C-PageUp>
+
+    nnoremap <silent> <C-l> <C-PageDown>
+    nnoremap <silent> <C-h> <C-PageUp>
+    nnoremap <silent> <C-k>l :tabm +1<CR>
+    nnoremap <silent> <C-k>h :tabm -1<CR>
+
+    nnoremap <silent> <C-k>t :tabnew<CR>
     nnoremap <silent> <C-k>1 :tabnext 1<CR>
     nnoremap <silent> <C-k>2 :tabnext 2<CR>
     nnoremap <silent> <C-k>3 :tabnext 3<CR>
@@ -301,9 +321,12 @@ if v:version > 700
     nnoremap <silent> <C-k>8 :tabnext 8<CR>
     nnoremap <silent> <C-k>9 :tabnext 9<CR>
 if v:version > 800
-    tnoremap <silent> <C-k>l <C-w>:tabn<CR>
-    tnoremap <silent> <C-k>k <C-w>:tabnew<CR>
-    tnoremap <silent> <C-k>h <C-w>:tabp<CR>
+    tnoremap <silent> <C-l> <C-w>:tabn<CR>
+    tnoremap <silent> <C-h> <C-w>:tabp<CR>
+    tnoremap <silent> <C-k>l <C-w>:tabm +1<CR>
+    tnoremap <silent> <C-k>h <C-w>:tabm -1<CR>
+
+    tnoremap <silent> <C-k>t <C-w>:tabnew<CR>
     tnoremap <silent> <C-k>1 <C-w>:tabnext 1<CR>
     tnoremap <silent> <C-k>2 <C-w>:tabnext 2<CR>
     tnoremap <silent> <C-k>3 <C-w>:tabnext 3<CR>
@@ -336,32 +359,31 @@ if v:version < 800
 	finish
 endif
 
-"FUNCTION when just starting.. there is no tab assigned so ...
-autocmd TabNew * let t:term_buf_nr = -1
-let t:term_buf_nr = -1
-function! s:ToggleTerminal() abort
-    if t:term_buf_nr == -1
-        execute "botright terminal"
-        let t:term_buf_nr = bufnr("$")
-    else
-        try
-            execute "bdelete! " . t:term_buf_nr
-        catch
-            let t:term_buf_nr = -1
-            call <SID>ToggleTerminal()
-            return
-        endtry
-        let t:term_buf_nr = -1
-    endif
-endfunction
-
-"FUNCTION implement toggle term feature ...
-nnoremap <silent> <C-k><C-k> :call <SID>ToggleTerminal()<CR>
-tnoremap <silent> <C-k><C-k> <C-w>:call <SID>ToggleTerminal()<CR>
+""FUNCTION when just starting.. there is no tab assigned so ...
+"autocmd TabNew * let t:term_buf_nr = -1
+"let t:term_buf_nr = -1
+"function! s:ToggleTerminal() abort
+"    if t:term_buf_nr == -1
+"        execute "botright terminal"
+"        let t:term_buf_nr = bufnr("$")
+"    else
+"        try
+"            execute "bdelete! " . t:term_buf_nr
+"        catch
+"            let t:term_buf_nr = -1
+"            call <SID>ToggleTerminal()
+"            return
+"        endtry
+"        let t:term_buf_nr = -1
+"    endif
+"endfunction
+""FUNCTION implement toggle term feature ...
+"nnoremap <silent> <C-k><C-k> :call <SID>ToggleTerminal()<CR>
+"tnoremap <silent> <C-k><C-k> <C-w>:call <SID>ToggleTerminal()<CR>
 
 "FUNCTION
-nnoremap <silent> <C-k><C-t> :terminal ++curwin<cr>
-tnoremap <silent> <C-k><C-t> <C-w>:terminal ++curwin<cr>
+nnoremap <silent> <C-k><C-k> :terminal ++curwin<cr>
+tnoremap <silent> <C-k><C-k> <C-w>:terminal ++curwin<cr>
 
 
 
