@@ -279,9 +279,17 @@ if v:version < 700
 endif
 
 "FUNCTION using nerdtree like feature
-nnoremap <silent> <f7> :30Lexplore<cr>
-tnoremap <silent> <f7> <c-w>:30Lexplore<cr>
+function! ToggleExplorer()
+if &ft ==# "netrw"
+    execute "Lexplore"
+else    
+    execute "20Lexplore ".expand('%:p:h')
+endif
+endfunction
+nnoremap <silent> <F7> :call ToggleExplorer()<CR>
+tnoremap <silent> <F7> <c-w>:20Lexplore<CR>
 
+"execute "Lexplore ".expand('%:p:h')
 "FUNCTION_05 add tab related feature
 if v:version > 700
     " Switch to last-active tab
