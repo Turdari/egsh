@@ -21,13 +21,13 @@ set runtimepath^=~/.vim/bundle/tagbar
 helptags ~/.vim/bundle/tagbar/doc
 nmap <F8> :TagbarToggle<CR>
 
-"FUNCTION_00 term sync feature .... should be added here
-if v:version < 900
-    set runtimepath^=~/.vim/bundle/sync-term-cwd
-    helptags ~/.vim/bundle/sync-term-cwd/doc
-else
-    set autoshelldir
-endif
+""FUNCTION_00 term sync feature .... should be added here
+"if v:version < 900
+"    set runtimepath^=~/.vim/bundle/sync-term-cwd
+"    helptags ~/.vim/bundle/sync-term-cwd/doc
+"else
+"    set autoshelldir
+"endif
 
 "FUNCTION_FF Disable Compile, But Enable Debug
 au BufRead,BufNewFile *.c.ref set syntax=c
