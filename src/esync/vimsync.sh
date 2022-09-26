@@ -39,21 +39,21 @@ do
                     ;;
                 esac
             fi
-            if [ ! -d  $VIMBUNDLE/nerdtree ] ; then
-                echo "SYNC nerdtree"
-                read -p "Do you want to overwrite? (y/n)" yn
-                case $yn in
-                    y | Y )    
-                        git clone https://github.com/preservim/nerdtree.git $VIMBUNDLE/nerdtree
-#                        #sudo chmod -R 777 $ESYNCVIMBUNDLE/nerdtree/*
-#                        cp -r $ESYNCVIMBUNDLE/nerdtree $VIMBUNDLE/nerdtree
-                    ;;
-                    n | N )
-                    ;;
-                    * )
-                    ;;
-                esac
-            fi
+#            if [ ! -d  $VIMBUNDLE/nerdtree ] ; then
+#                echo "SYNC nerdtree"
+#                read -p "Do you want to overwrite? (y/n)" yn
+#                case $yn in
+#                    y | Y )    
+#                        git clone https://github.com/preservim/nerdtree.git $VIMBUNDLE/nerdtree
+##                        #sudo chmod -R 777 $ESYNCVIMBUNDLE/nerdtree/*
+##                        cp -r $ESYNCVIMBUNDLE/nerdtree $VIMBUNDLE/nerdtree
+#                    ;;
+#                    n | N )
+#                    ;;
+#                    * )
+#                    ;;
+#                esac
+#            fi
             if [ ! -d  $VIMBUNDLE/sync-term-cwd ] || [ ! -f $EGSH_USR_SHSRC/synctermcwd.sh ]; then
                 echo "SYNC sync-term-cwd"
                 read -p "Do you want to overwrite? (y/n)" yn

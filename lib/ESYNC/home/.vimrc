@@ -20,41 +20,7 @@ set tags+=$HOME/.tagsdir/tags
 set runtimepath^=~/.vim/bundle/tagbar
 helptags ~/.vim/bundle/tagbar/doc
 nmap <F8> :TagbarToggle<CR>
-"FUNCTION_00 set nerdtree...
-if v:version > 700
-	set runtimepath^=~/.vim/bundle/nerdtree
-	helptags ~/.vim/bundle/nerdtree/doc
-    let g:NERDTreeNodeDelimiter = "\u00a0"
-    let t:customcwd = "nullstr"
 
-    "https://stackoverflow.com/questions/41541648/how-to-check-if-nerdtree-is-open-in-vimscript
-    "toggle for cwd
-    function! IsNerdTreeEnabled()
-        return exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1
-    endfunction
-
-    function! NERDTreeCustomToggle()
-        if IsNerdTreeEnabled()
-            ":NERDTreeToggle
-            let t:customcwd = getcwd()
-            execute "NERDTree " . t:customcwd
-        else
-            let t:customcwd = getcwd()
-            execute "NERDTree " . t:customcwd
-        endif
-    endfunction
-
-	"nnoremap <leader>n :NERDTreeFocus<CR>
-	nnoremap <silent> <F7> :NERDTreeToggle<CR>
-	nnoremap <silent> <F6> :call NERDTreeCustomToggle()<CR>
-	nnoremap <silent> <C-k>f :NERDTreeFocus<CR>
-	"nnoremap <silent> <C-k>f :NERDTreeFind<CR>
-	if v:version > 800
-		tnoremap <silent> <F7> <C-w>:NERDTreeToggle<CR>
-	    tnoremap <silent> <F6> <C-w>:call NERDTreeCustomToggle()<CR>
-		tnoremap <silent> <C-k>f <C-w>:NERDTreeFocus<CR>
-	endif
-endif
 "FUNCTION_00 term sync feature .... should be added here
 if v:version < 900
     set runtimepath^=~/.vim/bundle/sync-term-cwd
@@ -312,6 +278,10 @@ if v:version < 700
 	finish
 endif
 
+"FUNCTION using nerdtree like feature
+nnoremap <silent> <f7> :30Lexplore<cr>
+tnoremap <silent> <f7> <c-w>:30Lexplore<cr>
+
 "FUNCTION_05 add tab related feature
 if v:version > 700
     " Switch to last-active tab
@@ -378,27 +348,27 @@ if v:version < 800
 	finish
 endif
 
-""FUNCTION when just starting.. there is no tab assigned so ...
-"autocmd TabNew * let t:term_buf_nr = -1
-"let t:term_buf_nr = -1
-"function! s:ToggleTerminal() abort
-"    if t:term_buf_nr == -1
-"        execute "botright terminal"
-"        let t:term_buf_nr = bufnr("$")
-"    else
-"        try
-"            execute "bdelete! " . t:term_buf_nr
-"        catch
-"            let t:term_buf_nr = -1
-"            call <SID>ToggleTerminal()
-"            return
-"        endtry
-"        let t:term_buf_nr = -1
-"    endif
-"endfunction
-""FUNCTION implement toggle term feature ...
-"nnoremap <silent> <C-k><C-k> :call <SID>ToggleTerminal()<CR>
-"tnoremap <silent> <C-k><C-k> <C-w>:call <SID>ToggleTerminal()<CR>
+"FUNCTION when just starting.. there is no tab assigned so ...
+autocmd TabNew * let t:term_buf_nr = -1
+let t:term_buf_nr = -1
+function! s:ToggleTerminal() abort
+    if t:term_buf_nr == -1
+        execute "botright terminal"
+        let t:term_buf_nr = bufnr("$")
+    else
+        try
+            execute "bdelete! " . t:term_buf_nr
+        catch
+            let t:term_buf_nr = -1
+            call <SID>ToggleTerminal()
+            return
+        endtry
+        let t:term_buf_nr = -1
+    endif
+endfunction
+"FUNCTION implement toggle term feature ...
+nnoremap <silent> <C-k>t :call <SID>ToggleTerminal()<CR>
+tnoremap <silent> <C-k>t <C-w>:call <SID>ToggleTerminal()<CR>
 
 "FUNCTION
 nnoremap <silent> <C-k><C-k> :terminal ++curwin<cr>
