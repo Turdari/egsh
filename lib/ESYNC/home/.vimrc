@@ -266,11 +266,6 @@ func GetFuncParamsFromTag()
 endfunc
 nnoremap <silent> <C-k>p :call GetFuncParamsFromTag()<cr>
 
-
-
-
-
-
 "******************
 "version marker 700
 "******************
@@ -279,17 +274,38 @@ if v:version < 700
 endif
 
 "FUNCTION using nerdtree like feature
-function! ToggleExplorer()
-if &ft ==# "netrw"
-    execute "Lexplore"
-else    
-    execute "20Lexplore ".expand('%:p:h')
-endif
-endfunction
-nnoremap <silent> <F7> :call ToggleExplorer()<CR>
-tnoremap <silent> <F7> <c-w>:20Lexplore<CR>
 
-"execute "Lexplore ".expand('%:p:h')
+"let t:NetrwIsOpen = 0
+"autocmd! TabNew * let t:NetrwIsOpen = 0
+function! ToggleExplorerTerm()
+let b:curjob = term_getjob( bufnr('%') )
+    if b:curjob != v:null
+        let b:curpid = job_info(b:curjob).process
+        let b:curcwd = system("readlink /proc/".b:curpid."/cwd")
+    else 
+        let b:curcwd = expand('%:p:h')
+    endif
+
+    if exists('t:NetrwIsOpen') && t:NetrwIsOpen == 1
+        let i = bufnr("$")
+        while (i >= 1)
+            if (getbufvar(i, "&filetype") == "netrw")
+                silent exe "bwipeout " . i 
+            endif
+            let i-=1
+        endwhile
+        let t:NetrwIsOpen=0
+    else
+        let t:NetrwIsOpen=1
+        execute "Lexplore ".b:curcwd
+        vertical resize 40
+    endif
+endfunction
+nnoremap <silent> <F7> :call ToggleExplorerTerm()<CR>
+tnoremap <silent> <F7> <c-w>:call ToggleExplorerTerm()<CR>
+
+
+
 "FUNCTION_05 add tab related feature
 if v:version > 700
     " Switch to last-active tab
