@@ -25,6 +25,9 @@ nmap <F8> :TagbarToggle<CR>
 au BufRead,BufNewFile *.c.ref set syntax=c
 au BufRead,BufNewFile *.h.ref set syntax=c
 
+"FUNCTION_ sudo writing with w!!
+cnoremap w!! execute 'silent! write !sudo tee % >/dev/null' <bar> edit!
+
 "FUNCTION_01 function for debug
 function! ToggleVerbose()
     if !&verbose
@@ -312,6 +315,7 @@ function! NetrwGetdir()
 endfunction
 function! NetrwMapping()
     noremap <buffer><silent> <F6> :call NetrwGetdir()<CR>
+    noremap <buffer><silent> <c-l> :tabn<CR>
 endfunction
 
 "FUNCTION_05 add tab related feature
