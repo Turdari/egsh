@@ -21,14 +21,6 @@ set runtimepath^=~/.vim/bundle/tagbar
 helptags ~/.vim/bundle/tagbar/doc
 nmap <F8> :TagbarToggle<CR>
 
-""FUNCTION_00 term sync feature .... should be added here
-"if v:version < 900
-"    set runtimepath^=~/.vim/bundle/sync-term-cwd
-"    helptags ~/.vim/bundle/sync-term-cwd/doc
-"else
-"    set autoshelldir
-"endif
-
 "FUNCTION_FF Disable Compile, But Enable Debug
 au BufRead,BufNewFile *.c.ref set syntax=c
 au BufRead,BufNewFile *.h.ref set syntax=c
@@ -43,10 +35,6 @@ function! ToggleVerbose()
         set verbosefile=
     endif
 endfunction
-
-"plugin test... , it works!
-"set runtimepath^=~/.vim/bundle/CompleteParameter.vim
-"vim -c 'helptag ~/.vim/bundle/CompleteParameter.vim/doc' -c qa!
 
 "FUNCTION_02  For trimming F3 search value... useful when loading it into terminal
 function! TrimExactMatch()
@@ -273,10 +261,8 @@ if v:version < 700
 	finish
 endif
 
-"FUNCTION using nerdtree like feature
-
-"let t:NetrwIsOpen = 0
-"autocmd! TabNew * let t:NetrwIsOpen = 0
+"FUNCTION netrw toggle feature
+let g:netrw_liststyle = 3
 function! ToggleExplorerTerm()
 let b:curjob = term_getjob( bufnr('%') )
     if b:curjob != v:null
@@ -304,7 +290,29 @@ endfunction
 nnoremap <silent> <F7> :call ToggleExplorerTerm()<CR>
 tnoremap <silent> <F7> <c-w>:call ToggleExplorerTerm()<CR>
 
-
+"FUNCTION netrw cd to 
+let g:netrw_getdir = ""
+augroup netrw_mapping
+    autocmd!
+    autocmd filetype netrw call NetrwMapping()
+augroup END
+function! NetrwGetdir()
+    let g:netrw_getdir = b:netrw_curdir
+    let tab_arr = []
+    let tab_arr += tabpagebuflist()
+    for tnum in tab_arr
+        let bt = getbufvar(tnum, "&buftype")
+        if bt == "terminal"
+            "echo "buffer type == ".bt.",g:netrw_getdir == ".g:netrw_getdir
+            call term_sendkeys(tnum, "cd ".g:netrw_getdir."\<CR>")
+            break
+            echo "works?"
+        endif 
+    endfor
+endfunction
+function! NetrwMapping()
+    noremap <buffer><silent> <F6> :call NetrwGetdir()<CR>
+endfunction
 
 "FUNCTION_05 add tab related feature
 if v:version > 700
