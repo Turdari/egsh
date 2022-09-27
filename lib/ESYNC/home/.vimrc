@@ -391,12 +391,12 @@ function! s:ToggleTerminal() abort
     endif
 endfunction
 "FUNCTION implement toggle term feature ...
-nnoremap <silent> <C-k>t :call <SID>ToggleTerminal()<CR>
-tnoremap <silent> <C-k>t <C-w>:call <SID>ToggleTerminal()<CR>
+nnoremap <silent> <C-k><C-k> :call <SID>ToggleTerminal()<CR>
+tnoremap <silent> <C-k><C-k> <C-w>:call <SID>ToggleTerminal()<CR>
 
 "FUNCTION
-nnoremap <silent> <C-k><C-k> :terminal ++curwin<cr>
-tnoremap <silent> <C-k><C-k> <C-w>:terminal ++curwin<cr>
+nnoremap <silent> <C-k>t :terminal ++curwin<cr>
+tnoremap <silent> <C-k>t <C-w>:terminal ++curwin<cr>
 
 "FUNCTION_ force close
 nnoremap <silent> <C-k>q :q!<cr>
