@@ -69,6 +69,24 @@ if v:version > 800
 	tnoremap <silent> <F5> <C-w>:call ToggleHideAndRestoreBuffer()<CR>
 endif
 
+"FUNCTION_?? Ranger style marks command
+function! Marks()
+    marks
+    echo('Mark: ')
+
+    " getchar() - prompts user for a single character and returns the chars
+    " ascii representation
+    " nr2char() - converts ASCII `NUMBER TO CHAR'
+
+    let s:mark = nr2char(getchar())
+    " remove the `press any key prompt'
+    redraw
+
+    " build a string which uses the `normal' command plus the var holding the
+    " mark - then eval it.
+    execute "normal! '" . s:mark
+endfunction
+nnoremap <silent> <C-k>m :call Marks()<CR>
 
 "FUNCTION_FF cscope
 ""check csocpe functionality available
@@ -265,7 +283,8 @@ if v:version < 700
 endif
 
 "FUNCTION netrw toggle feature
-let g:netrw_liststyle = 3
+let g:netrw_liststyle = 3   " tree style
+let g:netrw_altv = 1        " split right side
 function! ToggleExplorerTerm()
 let b:curjob = term_getjob( bufnr('%') )
     if b:curjob != v:null
@@ -287,6 +306,7 @@ let b:curjob = term_getjob( bufnr('%') )
     else
         let t:NetrwIsOpen=1
         execute "Lexplore ".b:curcwd
+        let g:netrw_chgwin = -1
         vertical resize 40
     endif
 endfunction
@@ -334,7 +354,8 @@ if v:version > 700
     nnoremap <silent> <C-h> <C-PageUp>
     nnoremap <silent> <C-k>l :tabm +1<CR>
     nnoremap <silent> <C-k>h :tabm -1<CR>
-    nnoremap <silent> <C-k>k :tabnew<CR>
+    "nnoremap <silent> <C-k>k :tabnew<CR>
+    nnoremap <silent> <C-k>k :tab split<CR>
 
     nnoremap <silent> <C-k>1 :tabnext 1<CR>
     nnoremap <silent> <C-k>2 :tabnext 2<CR>
@@ -350,7 +371,8 @@ if v:version > 800
     tnoremap <silent> <C-h> <C-w>:tabp<CR>
     tnoremap <silent> <C-k>l <C-w>:tabm +1<CR>
     tnoremap <silent> <C-k>h <C-w>:tabm -1<CR>
-    tnoremap <silent> <C-k>k <C-w>:tabnew<CR>
+    "tnoremap <silent> <C-k>k <C-w>:tabnew<CR>
+    tnoremap <silent> <C-k>k <C-w>:tab split<CR>
 
     tnoremap <silent> <C-k>1 <C-w>:tabnext 1<CR>
     tnoremap <silent> <C-k>2 <C-w>:tabnext 2<CR>
@@ -414,5 +436,26 @@ tnoremap <silent> <C-k>t <C-w>:terminal ++curwin<cr>
 nnoremap <silent> <C-k>q :q!<cr>
 tnoremap <silent> <C-k>q <C-w>:q!<cr>
 
-
+function! MkSession(...)
+    " Handle the argument
+    if empty(a:000)
+        let filename = "Session.vim"
+    else
+        let filename = fnameescape(a:1)
+    endif
+    " Create the session file according to the argument passed
+    execute 'mksession! ' . filename
+    " The list containing the lines on the unnmaed buffers
+    let noname_buffers = []
+    " Get the lines of all the unnamed buffers in the list
+    execute "silent! bufdo \| if expand('%')=='' \| call add(noname_buffers, getline(1, '$')) \| endif"
+    " For each set of lines
+    " Add into the session file a line creating an empty buffer
+    " and a line adding its content
+    for lines in noname_buffers
+        call system('echo "enew" >> '.filename)
+        call system('echo "call append(0, [\"'. join(lines, '\",\"') .'\"])" >>'. filename)
+    endfor
+endfunction
+command! -nargs=? Mksession call MkSession(<f-args>)
 
