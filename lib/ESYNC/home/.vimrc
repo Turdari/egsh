@@ -321,19 +321,38 @@ augroup netrw_mapping
 augroup END
 function! NetrwGetdir()
     let g:netrw_getdir = b:netrw_curdir
-    let tab_arr = []
-    let tab_arr += tabpagebuflist()
-    for tnum in tab_arr
+    let tab_buf_arr = []
+    let tab_buf_arr += tabpagebuflist()
+    for tnum in tab_buf_arr
         let bt = getbufvar(tnum, "&buftype")
         if bt == "terminal"
             "echo "buffer type == ".bt.",g:netrw_getdir == ".g:netrw_getdir
+            call term_sendkeys(tnum, "\<c-c>\<c-c>\<CR>")
             call term_sendkeys(tnum, "cd ".g:netrw_getdir."\<CR>")
             break
             echo "works?"
         endif 
     endfor
 endfunction
+function! NetrwSetTermTodir()
+    let g:netrw_getdir = b:netrw_curdir
+    let tab_buf_arr = []
+    let tab_buf_arr += tabpagebuflist()
+
+    execute "rightb vert terminal "
+
+    for tnum in tab_buf_arr
+        let bt = getbufvar(tnum, "&buftype")
+        if bt == "terminal"
+            echo "buffer type == ".bt.",g:netrw_getdir == ".g:netrw_getdir
+	    "call term_sendkeys(tnum, "\<c-c>\<c-c>\<CR>")
+            call term_sendkeys(tnum, "cd ".g:netrw_getdir."\<CR>")
+            break
+        endif 
+    endfor
+endfunction
 function! NetrwMapping()
+    "noremap <buffer><silent> <F5> :call NetrwSetTermTodir()<CR>
     noremap <buffer><silent> <F6> :call NetrwGetdir()<CR>
     noremap <buffer><silent> <c-l> :tabn<CR>
 endfunction
