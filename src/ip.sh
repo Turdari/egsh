@@ -9,6 +9,10 @@ LOOP_MACADDR_03="00:03:03:03:03:03"
 LOOP_MACADDR_05="00:05:05:05:05:05"
 MYMACADDR="00:10:10:10:10:10"
 URMACADDR="00:11:11:11:11:11"
+PC1MACADDR="00:10:10:10:10:10"
+PC2MACADDR="00:11:11:11:11:11"
+PC1IPADDR="10.0.10.10"
+PC2IPADDR="10.0.10.11"
 
 ip_pc1_arp_set()
 {
@@ -132,6 +136,44 @@ ip_testenv_set_loop_disabled()
 {
     echo "loop disabled, check pc number"
 
+    ARG_ARRAY=( $@ )
+
+    MYMAC=""
+    MYIP=""
+    URIP=""
+#    echo "arg array : ${ARG_ARRAY[@]}"
+#    echo "arg num : ${#ARG_ARRAY[@]}"
+
+    if [ ${#ARG_ARRAY[@]} -lt 1 ] ; 
+    then
+        echo "Usage:"
+        echo "${FUNCNAME[0]} <1|2>"
+    else
+        if [ ${ARG_ARRAY[0]} -eq 1 ] ; then
+            MYMAC=$PC1MACADDR
+            MYIP=$PC1IPADDR
+            URIP=$PC2IPADDR
+        fi
+        if [ ${ARG_ARRAY[0]} -eq 2 ] ; then
+            MYMAC=$PC2MACADDR
+            URIP=$PC2IPADDR
+            MYIP=$PC1IPADDR
+        fi
+    fi
+
+    sudo ip link set $IFNAME down
+    sudo ip link add link $IFNAME address $MYMAC $IFNAME.1 type macvlan
+    #sudo ip link add link $IFNAME address $LOOP_MACADDR_05 $IFNAME.2 type macvlan
+    sudo ip address add dev $IFNAME.1 $MYIP/24
+    #sudo ip address add dev $IFNAME.2 10.0.10.5/24
+    sudo ip link set $IFNAME.1 up
+    sudo ip link set $IFNAME up
+
+    sudo ip r del 10.0.10.0/24 dev $IFNAME
+    sudo ip r del 10.0.10.0/24 dev $IFNAME.1
+    sudo ip r add 10.0.10.0/24 dev $IFNAME.1                                                                                                                                       
+
+    sudo arp -i $IFNAME.1 -s $URIP 00:11:22:33:44:55
 }
 ip_testenv_clear()
 {
@@ -144,12 +186,39 @@ ip_testenv_clear()
 }
 ip_testenv_set()
 {
-    ip_testenv_clear
+    ARG_ARRAY=( $@ )
+    if [ ${#ARG_ARRAY[@]} -lt 1 ] ; then
+        echo "Usage:"
+        printf "\t${FUNCNAME[0]} [ Loop Enable ] [ Options ]\n"
+        printf "Where:\n"
+        printf "\tLoop Enable   := TRUE | FALSE\n"
+        printf "\tTRUE Options  :=  \n"
+        printf "\tFALSE Options := 1 | 2 \n"
+        printf "Example: \n"
+        printf "${FUNCNAME[0]} FALSE 1\n"
+        return
+    fi
 
+    if [ ${ARG_ARRAY[0]} = 'TRUE' ] ; then
+        TEST_ISLOOP='TRUE'
+    fi
+
+    if [ ${ARG_ARRAY[0]} = 'FALSE' ] ; then
+        if [ ${#ARG_ARRAY[@]} -lt 2 ] ; then
+            echo "argument error"
+            return
+        fi
+        if [ ${ARG_ARRAY[1]} -le 2 ] && [ ${ARG_ARRAY[1]} -gt 0 ]  ; then
+            TEST_ISLOOP="FALSE"
+            TEST_PCNUMBER=${ARG_ARRAY[1]}
+        fi
+    fi
+
+    ip_testenv_clear
     if [ $TEST_ISLOOP == 'TRUE' ]
     then ip_testenv_set_loop_enabled
     elif [ $TEST_ISLOOP == 'FALSE' ]
-    then ip_testenv_set_loop_disabled
+    then ip_testenv_set_loop_disabled $TEST_PCNUMBER
     else
         echo "SET TEST_ISLOOP variable in script!"
     fi
