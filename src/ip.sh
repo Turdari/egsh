@@ -3,7 +3,7 @@
 #TEST_ISLOOP=TRUE or FALSE
 TEST_ISLOOP=TRUE
 TEST_PCNUMBER=0
-IFNAME=enp3s0
+IFNAME=enp2s0
 
 LOOP_MACADDR_03="00:03:03:03:03:03"
 LOOP_MACADDR_05="00:05:05:05:05:05"
@@ -112,6 +112,7 @@ ip_testenv_set_loop_enabled()
     sudo ip link set $IFNAME down
     sudo ip link add link $IFNAME address $LOOP_MACADDR_03 $IFNAME.1 type macvlan
     sudo ip link add link $IFNAME address $LOOP_MACADDR_05 $IFNAME.2 type macvlan
+    sudo ip address add dev $IFNAME 10.0.10.1/24
     sudo ip address add dev $IFNAME.1 10.0.10.3/24
     sudo ip address add dev $IFNAME.2 10.0.10.5/24
     sudo ip link set $IFNAME.1 up
@@ -122,13 +123,14 @@ ip_testenv_set_loop_enabled()
     sudo ip r del 10.0.10.0/24 dev $IFNAME
     sudo ip r del 10.0.10.0/24 dev $IFNAME.1
     sudo ip r del 10.0.10.0/24 dev $IFNAME.2
-    sudo ip r add 10.0.10.2 dev $IFNAME                                                                                                                                      
-    sudo ip r add 10.0.10.6 dev $IFNAME.1                                                                                                                                       
+    sudo ip r add 10.0.10.2 dev $IFNAME
+    sudo ip r add 10.0.10.6 dev $IFNAME.1
     sudo ip r add 10.0.10.4 dev $IFNAME.2
 
     # ~ should be set into
     # select interface where specific address should select,
     # address should
+    sudo arp -i $IFNAME -s 10.0.10.2 00:11:22:33:44:55
     sudo arp -i $IFNAME.1 -s 10.0.10.6 00:11:22:33:44:55
     sudo arp -i $IFNAME.2 -s 10.0.10.4 00:11:22:33:44:55
 }
@@ -156,14 +158,19 @@ ip_testenv_set_loop_disabled()
         fi
         if [ ${ARG_ARRAY[0]} -eq 2 ] ; then
             MYMAC=$PC2MACADDR
-            URIP=$PC2IPADDR
-            MYIP=$PC1IPADDR
+            MYIP=$PC2IPADDR
+            URIP=$PC1IPADDR
         fi
     fi
+
+    echo "My mac : $MYMAC"
+    echo "Your IP : $URIP"
+    echo "My IP : $MYIP"
 
     sudo ip link set $IFNAME down
     sudo ip link add link $IFNAME address $MYMAC $IFNAME.1 type macvlan
     #sudo ip link add link $IFNAME address $LOOP_MACADDR_05 $IFNAME.2 type macvlan
+    sudo ip address add dev $IFNAME 10.0.10.1/24
     sudo ip address add dev $IFNAME.1 $MYIP/24
     #sudo ip address add dev $IFNAME.2 10.0.10.5/24
     sudo ip link set $IFNAME.1 up
@@ -171,8 +178,11 @@ ip_testenv_set_loop_disabled()
 
     sudo ip r del 10.0.10.0/24 dev $IFNAME
     sudo ip r del 10.0.10.0/24 dev $IFNAME.1
-    sudo ip r add 10.0.10.0/24 dev $IFNAME.1                                                                                                                                       
+    sudo ip r del 10.0.10.0/24 dev $IFNAME.2
+    sudo ip r add 10.0.10.2 dev $IFNAME
+    sudo ip r add $URIP dev $IFNAME.1
 
+    sudo arp -i $IFNAME -s 10.0.10.2 00:11:22:33:44:55
     sudo arp -i $IFNAME.1 -s $URIP 00:11:22:33:44:55
 }
 ip_testenv_clear()
