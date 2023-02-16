@@ -182,11 +182,12 @@ ip_testenv_set_loop_disabled()
     sudo ip r add 10.0.10.2 dev $IFNAME
     sudo ip r add $URIP dev $IFNAME.1
 
-    sudo arp -i $IFNAME -s 10.0.10.2 00:11:22:33:44:55
-    sudo arp -i $IFNAME.1 -s $URIP 00:11:22:33:44:55
+#    sudo arp -i $IFNAME -s 10.0.10.2 00:11:22:33:44:55
+#    sudo arp -i $IFNAME.1 -s $URIP 00:11:22:33:44:55
 }
 ip_testenv_clear()
 {
+    sudo ip addr flush dev $IFNAME
     sudo ip link set $IFNAME down
 	sudo ip link del link $IFNAME address $LOOP_MACADDR_03 $IFNAME.1 type macvlan
 	sudo ip link del link $IFNAME address $LOOP_MACADDR_05 $IFNAME.2 type macvlan
