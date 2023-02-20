@@ -286,7 +286,10 @@ endif
 let g:netrw_liststyle = 3   " tree style
 let g:netrw_altv = 1        " split right side
 function! ToggleExplorerTerm()
-let b:curjob = term_getjob( bufnr('%') )
+    let b:curjob = term_getjob( bufnr('%') )
+    let t:tab_buf_arr = []
+    let t:tab_buf_arr += tabpagebuflist()
+
     if b:curjob != v:null
         let b:curpid = job_info(b:curjob).process
         let b:curcwd = system("readlink /proc/".b:curpid."/cwd")
@@ -294,21 +297,40 @@ let b:curjob = term_getjob( bufnr('%') )
         let b:curcwd = expand('%:p:h')
     endif
 
+" copied from other function
     if exists('t:NetrwIsOpen') && t:NetrwIsOpen == 1
-        let i = bufnr("$")
-        while (i >= 1)
-            if (getbufvar(i, "&filetype") == "netrw")
-                silent exe "bwipeout " . i 
-            endif
-            let i-=1
-        endwhile
-        let t:NetrwIsOpen=0
+        for tnum in tab_buf_arr
+            let bt = getbufvar(tnum, "&buftype")
+            if bt == "netrw"
+"                "echo "buffer type == ".bt.",g:netrw_getdir == ".g:netrw_getdir
+"                "call term_sendkeys(tnum, "cd ".g:netrw_getdir."\<CR>")
+                silent exe "bwipeout " . tnum
+                break
+            endif 
+        endfor
     else
         let t:NetrwIsOpen=1
         execute "Lexplore ".b:curcwd
-        let g:netrw_chgwin = -1
         vertical resize 40
+        "let g:netrw_chgwin = -1
     endif
+
+" original function
+"    if exists('t:NetrwIsOpen') && t:NetrwIsOpen == 1
+"        let i = bufnr("$")
+"        while (i >= 1)
+"            if (getbufvar(i, "&filetype") == "netrw")
+"                silent exe "bwipeout " . i 
+"            endif
+"            let i-=1
+"        endwhile
+"        let t:NetrwIsOpen=0
+"    else
+"        let t:NetrwIsOpen=1
+"        execute "Lexplore ".b:curcwd
+"        let g:netrw_chgwin = -1
+"        vertical resize 40
+"    endif
 endfunction
 nnoremap <silent> <F7> :call ToggleExplorerTerm()<CR>
 tnoremap <silent> <F7> <c-w>:call ToggleExplorerTerm()<CR>
