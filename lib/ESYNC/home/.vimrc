@@ -291,8 +291,8 @@ function! ToggleExplorerTerm()
     let t:tab_buf_arr += tabpagebuflist()
 
     if t:curjob != v:null
-        let t:curpid = job_info(b:curjob).process
-        let t:curcwd = system("readlink /proc/".b:curpid."/cwd")
+        let t:curpid = job_info(t:curjob).process
+        let t:curcwd = system("readlink /proc/".t:curpid."/cwd")
     else 
         let t:curcwd = expand('%:p:h')
     endif
