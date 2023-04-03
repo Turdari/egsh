@@ -286,16 +286,23 @@ endif
 let g:netrw_liststyle = 3   " tree style
 let g:netrw_altv = 1        " split right side
 function! ToggleExplorerTerm()
+
+if v:version > 800
     let t:curjob = term_getjob( bufnr('%') )
+endif
     let t:tab_buf_arr = []
     let t:tab_buf_arr += tabpagebuflist()
 
+if v:version > 800
     if t:curjob != v:null
         let t:curpid = job_info(t:curjob).process
         let t:curcwd = system("readlink /proc/".t:curpid."/cwd")
     else 
         let t:curcwd = expand('%:p:h')
     endif
+else
+    let t:curcwd = expand('%:p:h')
+endif
 
 " copied from other function
     if exists('t:NetrwIsOpen') && t:NetrwIsOpen == 1
@@ -307,26 +314,9 @@ function! ToggleExplorerTerm()
         let t:NetrwIsOpen=0
     else
         let t:NetrwIsOpen=1
-        execute "Lexplore ".t:curcwd
+        execute "Vexplore ".t:curcwd
         vertical resize 40
     endif
-
-" original function
-"    if exists('t:NetrwIsOpen') && t:NetrwIsOpen == 1
-"        let i = bufnr("$")
-"        while (i >= 1)
-"            if (getbufvar(i, "&filetype") == "netrw")
-"                silent exe "bwipeout " . i 
-"            endif
-"            let i-=1
-"        endwhile
-"        let t:NetrwIsOpen=0
-"    else
-"        let t:NetrwIsOpen=1
-"        execute "Lexplore ".b:curcwd
-"        let g:netrw_chgwin = -1
-"        vertical resize 40
-"    endif
 endfunction
 nnoremap <silent> <F7> :call ToggleExplorerTerm()<CR>
 if v:version > 800
