@@ -329,7 +329,9 @@ function! ToggleExplorerTerm()
 "    endif
 endfunction
 nnoremap <silent> <F7> :call ToggleExplorerTerm()<CR>
-tnoremap <silent> <F7> <c-w>:call ToggleExplorerTerm()<CR>
+if v:version > 800
+    tnoremap <silent> <F7> <c-w>:call ToggleExplorerTerm()<CR>
+endif
 
 "FUNCTION netrw cd to 
 let g:netrw_getdir = ""
@@ -382,10 +384,9 @@ if v:version > 700
         let g:Lasttab = 1
         let g:Lasttab_backup = 1
     endif
-    autocmd! TabLeave * let g:Lasttab_backup = g:Lasttab | let g:Lasttab = tabpagenr()
-    autocmd! TabClosed * let g:Lasttab = g:Lasttab_backup
-    nmap <silent> <C-k>` :exe "tabn " . g:Lasttab<cr>
-
+"    autocmd! TabLeave * let g:Lasttab_backup = g:Lasttab | let g:Lasttab = tabpagenr()
+"    autocmd! TabClosed * let g:Lasttab = g:Lasttab_backup
+"    nmap <silent> <C-k>` :exe "tabn " . g:Lasttab<cr>
 
     nnoremap <silent> <C-l> <C-PageDown>
     nnoremap <silent> <C-h> <C-PageUp>
@@ -426,6 +427,13 @@ endif
 "FUNCTION_06 autocomplete shortcut to ctrl + k
 set completeopt=longest,menuone
 inoremap <C-k> <C-n>
+
+
+"FUNCTION_ force close
+nnoremap <silent> <C-k>q :q!<cr>
+if v:version > 800
+tnoremap <silent> <C-k>q <C-w>:q!<cr>
+endif
 
 "******************
 "version marker 731
@@ -468,10 +476,6 @@ tnoremap <silent> <C-k><C-k> <C-w>:call <SID>ToggleTerminal()<CR>
 "FUNCTION
 nnoremap <silent> <C-k>t :terminal ++curwin<cr>
 tnoremap <silent> <C-k>t <C-w>:terminal ++curwin<cr>
-
-"FUNCTION_ force close
-nnoremap <silent> <C-k>q :q!<cr>
-tnoremap <silent> <C-k>q <C-w>:q!<cr>
 
 function! MkSession(...)
     " Handle the argument
