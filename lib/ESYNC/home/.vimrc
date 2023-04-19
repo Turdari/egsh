@@ -325,10 +325,6 @@ endif
 
 "FUNCTION netrw cd to 
 let g:netrw_getdir = ""
-augroup netrw_mapping
-    autocmd!
-    autocmd filetype netrw call NetrwMapping()
-augroup END
 function! NetrwGetdir()
     let g:netrw_getdir = b:netrw_curdir
     let tab_buf_arr = []
