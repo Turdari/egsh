@@ -8,7 +8,9 @@ set shiftwidth=4
 set expandtab
 set hlsearch
 set autochdir
-set tags+=$HOME/.tagsdir/tags
+
+
+
 
 "FUNCTION_00 bundle related functions
 set runtimepath^=~/.vim/bundle/tagbar
@@ -268,6 +270,55 @@ endfunc
 
 "}
 "==========================================
+"CTAGS {
+" Set ctags directory
+let ctag_dirname = $HOME . "/.vim/ctag-files"
+if !isdirectory(ctag_dirname)
+    call mkdir(ctag_dirname, "p")
+endif
+execute "set tags+=" . expand(ctag_dirname) . "/*"
+
+"FUNCTION_00 search-tag-from directory
+function! RecursiveTagSearch(startdir) abort
+    " Get absolute path of startdir
+    let abs_startdir = glob(a:startdir)
+
+    " Loop through all files and directories in startdir
+    for file in split(globpath(abs_startdir, "*"), "\n")
+        if isdirectory(file)
+            " If file is a directory, recursively call this function
+            "echo "Loop Dir : " . abs_startdir
+            call RecursiveTagSearch( file )
+        elseif file =~ 'tags'
+            " If file is a tag file with the naming convention 'tag-/dir/name', do something
+            "echo "Found tag file: " . file
+            execute "set tags+=" . file
+        else
+            "echo "else : " . file
+        endif
+    endfor
+endfunction
+
+function! CleanTags()
+    set tags =
+endfunction
+
+function! CleanSetTags() abort
+    call CleanTags()
+    set tags +=tags
+    set tags +=TAGS
+    set tags +=./tags
+    set tags +=./TAGS
+    let ctag_dirname = $HOME . "/.vim/ctag-files"
+    execute "set tags+=" . expand(ctag_dirname) . "/*"
+
+    let tstartdir = glob( getcwd() )
+
+    call RecursiveTagSearch( tstartdir )
+endfunction
+
+"}
+"==========================================
 "NETRW {
 if v:version > 600
     "FUNCTION netrw toggle feature
@@ -474,8 +525,18 @@ elseif v:version > 700
     nnoremap <silent> <C-k><C-k> :ConqueTermVSplit bash<CR>
 endif
 
+"Clean and Set tag recursively
+nnoremap <silent> <F2> :call CleanTags()<CR>
+nnoremap <silent> <F3> :call CleanSetTags()<CR>
+if v:version > 800
+    tnoremap <silent> <F2> <C-w>:call CleanTags()<CR>
+    tnoremap <silent> <F3> <C-w>:call CleanSetTags()<CR>
+endif
+
 "Tagbar Toggle
 nmap <F8> :TagbarToggle<CR>
+"Toggle log
+nnoremap <silent> <C-k>v :call ToggleVerbose()<cr>
 "Set another close in specific mapping
 nnoremap <silent> <C-k>q :q!<cr>
 if v:version > 800
@@ -505,3 +566,5 @@ nnoremap <silent> <F4> :call BundleInstall()<cr>
 
 "}
 "==========================================
+
+
