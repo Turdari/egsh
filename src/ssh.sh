@@ -62,3 +62,20 @@ ssh_tunnel_pc5_p5900()
 	return
 }
 
+sshx_pc4()
+{
+	echo "${FUNCNAME[0]} < usr > < server ipv4 >"
+    [ ! -z $1 ] && [ ! -z $2 ] && ssh -X -p 2204 $1@$2
+}
+
+sshx_pc5()
+{
+	echo "${FUNCNAME[0]} < usr > < server ipv4 >"
+    [ ! -z $1 ] && [ ! -z $2 ] && ssh -X -p 2205 $1@$2
+}
+
+
+
+
+
+
