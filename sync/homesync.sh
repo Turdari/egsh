@@ -15,8 +15,6 @@ export EGSH_CTX_PKG_LIB ;
 #CMDARG=( $@ )
 
 ESYNCHOME=$EGSH_CTX_ESYNC_LIB/home
-ESYNC_SHELL_SOURCE_DIR=$EGSH_CTX_ESYNC_LIB/sh
-
 
 RV=0
 
@@ -38,6 +36,23 @@ do
                     ;;
                 esac
             fi
+
+            if ( ! diff -s $ESYNCHOME/.alias $HOME/.alias  > /dev/null ) ; then
+                echo "SYNC .alias "
+                read -p "Do you want to overwrite? (y/n)" yn
+                case $yn in
+                    y | Y )
+                        rm -f $HOME/.alias
+                        ln -s $ESYNCHOME/.alias $HOME/.alias
+                    ;;
+                    n | N )
+                    ;;
+                    * )
+                    ;;
+                esac
+            fi
+
+
 #            if ( ! diff -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf > /dev/null ) ; then
 #                echo "SYNC .tmux.conf"
 #                read -p "Do you want to overwrite? (y/n)" yn
@@ -76,10 +91,10 @@ do
 #                echo ".tmux.conf diff!"
 #                RV=1;
 #            fi
-#            if ( ! grep -q "EGSH" $HOME/.bashrc ) ; then
-#                echo ".bashrc egsh shsrc not registered."
-#                RV=1;
-#            fi
+            if ( ! grep -q "EGSH_HOMESYNC" $HOME/.bashrc ) ; then
+                echo ".bashrc egsh_home not registered."
+                RV=1;
+            fi
         ;;
         * )
         ;;

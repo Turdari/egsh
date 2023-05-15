@@ -19,7 +19,7 @@ EGSH_RETURN=0
 #├── .egsh
 #│   ├── dcmd
 #│   ├── egsh -> /usr/local/lib/egsh
-#│   ├── esync
+#│   ├── sync
 #│   └── include
 UHOME=$HOME                         # 2.1
 UNAME=$USER                         # 2.1
@@ -27,17 +27,18 @@ EGSH_USR_DIR=$UHOME/.egsh           #
 EGSH_USR_DCMD=$UHOME/.egsh/dcmd     # local user 
 EGSH_USR_INC=$UHOME/.egsh/include   # local user 
 EGSH_USR_SHSRC=$UHOME/.egsh/shsrc  # Set 
-EGSH_USR_ESYNC=$UHOME/.egsh/esync   # for local user
+EGSH_USR_ESYNC=$UHOME/.egsh/sync   # for local user
 
 #egsh
 #├── core
 #├── lib
 #└── src
-#    └── esync
+#    └── sync
 EGSH_CTX_CORE=$EGSH_DIR/core
 EGSH_CTX_LIB=$EGSH_DIR/lib
 EGSH_CTX_SRC=$EGSH_DIR/src   
-EGSH_CTX_ESYNC=$EGSH_DIR/src/esync
+#EGSH_CTX_ESYNC=$EGSH_DIR/src/esync
+EGSH_CTX_ESYNC=$EGSH_DIR/sync
 
 #egsh
 #├── egsh
@@ -81,7 +82,7 @@ then
 	then
 		mkdir -p $UHOME/.egsh/dcmd
 		mkdir -p $UHOME/.egsh/include
-		mkdir -p $UHOME/.egsh/esync
+		mkdir -p $UHOME/.egsh/sync
 		mkdir -p $UHOME/.egsh/shsrc
         ln -s $EGSH_DIR $UHOME/.egsh/egsh
 		echo "$EGSH_DIR copied"

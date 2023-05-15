@@ -9,9 +9,6 @@ set expandtab
 set hlsearch
 set autochdir
 
-
-
-
 "FUNCTION_00 bundle related functions
 set runtimepath^=~/.vim/bundle/tagbar
 helptags ~/.vim/bundle/tagbar/doc
@@ -468,7 +465,6 @@ endif
 "}
 "==========================================
 "KEY_MAP {
-
 
 "Netrw related registration
 nnoremap <silent> <F7> :call ToggleExplorerTerm()<CR>
