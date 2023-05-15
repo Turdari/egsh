@@ -21,13 +21,13 @@ EGSH_RETURN=0
 #│   ├── egsh -> /usr/local/lib/egsh
 #│   ├── sync
 #│   └── include
-UHOME=$HOME                         # 2.1
+UENV=$EGSH_DIR                         # 2.1
 UNAME=$USER                         # 2.1
-EGSH_USR_DIR=$UHOME/.egsh           #
-EGSH_USR_DCMD=$UHOME/.egsh/dcmd     # local user 
-EGSH_USR_INC=$UHOME/.egsh/include   # local user 
-EGSH_USR_SHSRC=$UHOME/.egsh/shsrc  # Set 
-EGSH_USR_ESYNC=$UHOME/.egsh/sync   # for local user
+EGSH_USR_DIR=$UENV/.egsh           #
+EGSH_USR_DCMD=$UENV/.egsh/dcmd     # local user 
+EGSH_USR_INC=$UENV/.egsh/include   # local user 
+EGSH_USR_SHSRC=$UENV/.egsh/shsrc  # Set 
+EGSH_USR_ESYNC=$UENV/.egsh/sync   # for local user
 
 #egsh
 #├── core
@@ -68,33 +68,33 @@ echo "<< EGSH >>"
 #	#echo "SCBOOL = $SCBOOL, SUBOOL = $SUBOOL"
 #
 #	if [ $SCBOOL -eq 0 ] && [ $SUBOOL -eq 0 ] ; then
-#		# Change directory for $UHOME
-#		UHOME=$( getent passwd "$SUDO_USER" | cut -d: -f6 )
+#		# Change directory for $UENV
+#		UENV=$( getent passwd "$SUDO_USER" | cut -d: -f6 )
 #		UNAME=$SUDO_USER
 #	fi
 #fi
 
 #   2.2 Set .egsh with current context
-if [ ! -d "$UHOME/.egsh" ] ; 
+if [ ! -d "$UENV/.egsh" ] ; 
 then 
-	echo "$UHOME/.egsh not exist! create .egsh "
+	echo "$UENV/.egsh not exist! create .egsh "
 	if ( test -d "$EGSH_DIR" )
 	then
-		mkdir -p $UHOME/.egsh/dcmd
-		mkdir -p $UHOME/.egsh/include
-		mkdir -p $UHOME/.egsh/sync
-		mkdir -p $UHOME/.egsh/shsrc
-        ln -s $EGSH_DIR $UHOME/.egsh/egsh
-		echo "$EGSH_DIR copied"
+		mkdir -p $UENV/.egsh/dcmd
+		mkdir -p $UENV/.egsh/include
+		mkdir -p $UENV/.egsh/sync
+		mkdir -p $UENV/.egsh/shsrc
+#        ln -s $EGSH_DIR $UENV/.egsh/egsh
+#		echo "$EGSH_DIR copied"
 	else	
         echo "$EGSH_DIR corrupted, Reinstall package"
 		exit -1
 	fi
 else 
-	#echo "$UHOME/.egsh exist! Set .egsh with current context " 
-    rm -f $UHOME/.egsh/dcmd/*
-    rm $UHOME/.egsh/egsh
-    ln -s $EGSH_DIR $UHOME/.egsh/egsh
+	#echo "$UENV/.egsh exist! Set .egsh with current context " 
+    rm -f $UENV/.egsh/dcmd/*
+    rm $UENV/.egsh/egsh
+    #ln -s $EGSH_DIR $UENV/.egsh/egsh
 fi
 
 #   3. Export Variables
