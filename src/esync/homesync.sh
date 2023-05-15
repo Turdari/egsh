@@ -38,48 +38,48 @@ do
                     ;;
                 esac
             fi
-            if ( ! diff -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf > /dev/null ) ; then
-                echo "SYNC .tmux.conf"
-                read -p "Do you want to overwrite? (y/n)" yn
-                case $yn in
-                    y | Y )
-                        rm -f $HOME/.tmux.conf
-                        ln -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf
-                    ;;
-                    n | N )
-                    ;;
-                    * )
-                    ;;
-                esac
-            fi
-            if ( ! grep -q "EGSH" $HOME/.bashrc ) ; then
-                echo "SYNC .bashrc egsh shsrc "
-                read -p "Do you want to overwrite? (y/n)" yn
-                case $yn in
-                    y | Y )
-                        echo "##EGSH##" >> $HOME/.bashrc
-                        echo "for f in \$(find $EGSH_USR_SHSRC -type f ) ; do : ; source \$f ; done" >> $HOME/.bashrc
-                    ;;
-                    n | N )
-                    ;;
-                    * )
-                    ;;
-                esac
-            fi
+#            if ( ! diff -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf > /dev/null ) ; then
+#                echo "SYNC .tmux.conf"
+#                read -p "Do you want to overwrite? (y/n)" yn
+#                case $yn in
+#                    y | Y )
+#                        rm -f $HOME/.tmux.conf
+#                        ln -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf
+#                    ;;
+#                    n | N )
+#                    ;;
+#                    * )
+#                    ;;
+#                esac
+#            fi
+#            if ( ! grep -q "EGSH" $HOME/.bashrc ) ; then
+#                echo "SYNC .bashrc egsh shsrc "
+#                read -p "Do you want to overwrite? (y/n)" yn
+#                case $yn in
+#                    y | Y )
+#                        echo "##EGSH##" >> $HOME/.bashrc
+#                        echo "for f in \$(find $EGSH_USR_SHSRC -type f ) ; do : ; source \$f ; done" >> $HOME/.bashrc
+#                    ;;
+#                    n | N )
+#                    ;;
+#                    * )
+#                    ;;
+#                esac
+#            fi
     	;;
     	issync )
             if ( ! diff -s $ESYNCHOME/.vimrc $HOME/.vimrc > /dev/null ) ; then
                 echo ".vimrc diff!"
                 RV=1;
             fi
-            if ( ! diff -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf > /dev/null ) ; then
-                echo ".tmux.conf diff!"
-                RV=1;
-            fi
-            if ( ! grep -q "EGSH" $HOME/.bashrc ) ; then
-                echo ".bashrc egsh shsrc not registered."
-                RV=1;
-            fi
+#            if ( ! diff -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf > /dev/null ) ; then
+#                echo ".tmux.conf diff!"
+#                RV=1;
+#            fi
+#            if ( ! grep -q "EGSH" $HOME/.bashrc ) ; then
+#                echo ".bashrc egsh shsrc not registered."
+#                RV=1;
+#            fi
         ;;
         * )
         ;;
