@@ -32,6 +32,8 @@ INS_DIR_BIN=$HOME/.local/bin
 # check directory
 mkdir -p "$INS_DIR_BIN" 
 
+#echo "$EGSH_USR_DIR"
+rm -rf $EGSH_USR_DIR
 rm -rf $INS_DIR_LIB/egsh
 rm -rf $INS_DIR_BIN/egsh
 
