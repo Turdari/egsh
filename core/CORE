@@ -79,7 +79,7 @@ EGSH()
 	if [ -z $1 ] ; 
 	then
         echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
-		echo "CMD := { list(ls) | include(in) | exclude(ex) | install(ins) | remove(rm) }"
+		echo "CMD := { list(ls) | include(in) | exclude(ex) | install(ins) | update(up) }"
     else
 case $1 in
 	list | ls )
@@ -124,9 +124,16 @@ case $1 in
 		echo "Usage : install(ins) < START >"
 
 		if [ ! -z $2 ] 
-        then 
-            cp $EGSH_CTX_DCMD_LIB/install.sh $EGSH_USR_DCMD
-        fi
+	        then 
+	            cp $EGSH_CTX_DCMD_LIB/install.sh $EGSH_USR_DCMD
+	        fi
+	;;
+	update | up )	
+		echo "Usage : update(up) < START >"
+		if [ ! -z $2 ] 
+	        then 
+	        	cp $EGSH_CTX_DCMD_LIB/update.sh $EGSH_USR_DCMD
+        	fi
 	;;
 	remove | rm )	
 		echo "Usage : remove(rm) < START >"
@@ -138,7 +145,7 @@ case $1 in
 	;;
 	* )	
 		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
-		echo "CMD := { list(ls) | include(in) | exclude(ex) | install(ins) | remove(rm) }"
+		echo "CMD := { list(ls) | include(in) | exclude(ex) | install(ins) | update(up) }"
 	;;
 esac
     fi
