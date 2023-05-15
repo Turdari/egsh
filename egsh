@@ -120,9 +120,9 @@ EGSH_RETURN=$?
 if [ -d $EGSH_USR_DCMD ] 
 then
     if ( ls $EGSH_USR_DCMD | grep -q ".*\.sh" ) ; then
-        sudo rm -f /tmp/DCMD
-        sudo cp $EGSH_CTX_CORE/DCMD /tmp/DCMD  
-        /tmp/DCMD &
+        rm -f /tmp/DCMD-$USER
+        cp $EGSH_CTX_CORE/DCMD /tmp/DCMD-$USER
+        /tmp/DCMD-$USER &
     fi  
 fi
 
