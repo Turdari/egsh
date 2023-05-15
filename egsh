@@ -93,8 +93,6 @@ then
 else 
 	#echo "$UENV/.egsh exist! Set .egsh with current context " 
     rm -f $UENV/.egsh/dcmd/*
-    rm $UENV/.egsh/egsh
-    #ln -s $EGSH_DIR $UENV/.egsh/egsh
 fi
 
 #   3. Export Variables
