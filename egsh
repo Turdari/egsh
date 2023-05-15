@@ -59,20 +59,20 @@ EGSH_CTX_PKG_LIB=$EGSH_CTX_LIB/CORE
 
 #   1. Print egsh version
 echo "<< EGSH >>"
-if [ ! -z "$SUDO_COMMAND" ] && [ ! -z "$SUDO_USER" ] ; then	
-	#echo "SCOMMAND = $SUDO_COMMAND , SUSER = $SUDO_USER"
-	echo "$SUDO_COMMAND" | grep -q "egsh" ; 
-	SCBOOL=$?
-	echo "$SUDO_USER" | grep -vq "root" ; 
-	SUBOOL=$?
-	#echo "SCBOOL = $SCBOOL, SUBOOL = $SUBOOL"
-
-	if [ $SCBOOL -eq 0 ] && [ $SUBOOL -eq 0 ] ; then
-		# Change directory for $UHOME
-		UHOME=$( getent passwd "$SUDO_USER" | cut -d: -f6 )
-		UNAME=$SUDO_USER
-	fi
-fi
+#if [ ! -z "$SUDO_COMMAND" ] && [ ! -z "$SUDO_USER" ] ; then	
+#	#echo "SCOMMAND = $SUDO_COMMAND , SUSER = $SUDO_USER"
+#	echo "$SUDO_COMMAND" | grep -q "egsh" ; 
+#	SCBOOL=$?
+#	echo "$SUDO_USER" | grep -vq "root" ; 
+#	SUBOOL=$?
+#	#echo "SCBOOL = $SCBOOL, SUBOOL = $SUBOOL"
+#
+#	if [ $SCBOOL -eq 0 ] && [ $SUBOOL -eq 0 ] ; then
+#		# Change directory for $UHOME
+#		UHOME=$( getent passwd "$SUDO_USER" | cut -d: -f6 )
+#		UNAME=$SUDO_USER
+#	fi
+#fi
 
 #   2.2 Set .egsh with current context
 if [ ! -d "$UHOME/.egsh" ] ; 
