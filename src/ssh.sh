@@ -135,6 +135,32 @@ sshx_pc5()
     sshx_app turi 115.144.233.222:2205 $1
 }
 
+sshx_local_pc1()
+{
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 192.168.200.1:2201 $1
+}
+sshx_local_pc2()
+{
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 192.168.200.2:2202 $1
+}
+sshx_local_pc3()
+{
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 192.168.200.3:2203 $1
+}
+sshx_local_pc4()
+{
+
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 192.168.200.4:2204 $1
+}
+sshx_local_pc5()
+{
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 192.168.200.5:2205 $1
+}
 
 
 
