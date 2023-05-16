@@ -111,11 +111,6 @@ case $1 in
             # run script.sh checkinstall, if yes sync
         done
     ;;
-#	* )	
-#		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
-#		echo "CMD := { list(ls) | include(in) | exclude(ex) | sync }"
-#	;;
-
 	install | ins )	
 		echo "Usage : install(ins) < START >"
 
@@ -162,8 +157,8 @@ esac
 ## Show Breif Status ##
 ENVARRAY=( $(ls $EGSH_USR_ESYNC) )
 INCARRAY=( $(ls $EGSH_USR_INC) )
-echo "ENV: ${ENVARRAY[@]}"
-echo "INC: ${INCARRAY[@]}"
+[ $EGSH_FUNCNAME == "egsh-quiet" ] || echo "ENV: ${ENVARRAY[@]}"
+[ $EGSH_FUNCNAME == "egsh-quiet" ] || echo "INC: ${INCARRAY[@]}"
 # Use included script to check envsync
 for i in $(find $EGSH_USR_ESYNC -type l )
 do :

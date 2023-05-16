@@ -13,8 +13,10 @@
 EGSH_DIR=$( cd -- "$( dirname -- $(readlink -f "${BASH_SOURCE[0]}") )" &> /dev/null && pwd )
 EGSH_OWNER_ID=$(stat -c %u $EGSH_DIR)
 EGSH_RETURN=0
+EGSH_FUNCNAME=$(basename $0)
 
 #HOME
+
 #├── ALL -> /mnt/ALL
 #├── .egsh
 #│   ├── dcmd
@@ -58,7 +60,8 @@ EGSH_CTX_PKG_LIB=$EGSH_CTX_LIB/CORE
 
 
 #   1. Print egsh version
-echo "<< EGSH >>"
+
+[ $EGSH_FUNCNAME == "egsh-quiet" ] || echo "<< EGSH >>"
 #if [ ! -z "$SUDO_COMMAND" ] && [ ! -z "$SUDO_USER" ] ; then	
 #	#echo "SCOMMAND = $SUDO_COMMAND , SUSER = $SUDO_USER"
 #	echo "$SUDO_COMMAND" | grep -q "egsh" ; 
@@ -97,6 +100,7 @@ fi
 
 #   3. Export Variables
 export EGSH_DIR ;
+export EGSH_FUNCNAME
 export EGSH_VERSION ;
 export EGSH_USR_DIR ;
 export EGSH_USR_INC ;
