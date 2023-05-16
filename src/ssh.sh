@@ -3,9 +3,9 @@
 ssh_tunnel() 
 {
     # Check if the function was called with exactly three arguments
-    if [ "$#" -ne 3 ]; then
+    if [ "$#" -ne 4 ]; then
         # If not, print a usage message and return with an error status
-        echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4:port> <local_port>"
+        echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4:port> <target_port> <local_port>"
         return 1
     fi
 
@@ -20,19 +20,20 @@ ssh_tunnel()
 
     local server="${server_info[0]}"
     local ssh_server_port="${server_info[1]:-22}"  # Default SSH port is 22 if not provided
-    local local_port="$3"
+    local target_port="$3"
+    local local_port="$4"
 
     # The command to create the SSH tunnel
     # -nNT makes SSH run in the background without executing a remote command. This is necessary for setting up a tunnel
     # -L $local_port:localhost:$local_port specifies the details of the tunnel. It means that connections to $local_port on the local host are to be forwarded to the remote (server) host at the same port
-    ssh -p $ssh_server_port -nNT -L $local_port:localhost:$local_port $user@$server
+    ssh -p $ssh_server_port -nNT -L $target_port:localhost:$local_port $user@$server
 }
 ssh_reverse_tunnel() 
 {
     # Check if the function was called with exactly two arguments
-    if [ "$#" -ne 3 ]; then
+    if [ "$#" -ne 4 ]; then
         # If not, print a usage message and return with an error status
-        echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4:sshport> <port>"
+        echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4:sshport> <target-port> <local-port>"
         return 1
     fi
 
@@ -48,13 +49,13 @@ ssh_reverse_tunnel()
     
     local server="${server_info[0]}"
     local ssh_server_port="${server_info[1]:-22}"
-    local local_port="$3"
-    
+    local target_port="$3"
+    local local_port="$4"
     # The command to create the reverse SSH tunnel
     # -nNT makes SSH run in the background without executing a remote command. This is necessary for setting up a tunnel
-    # -R $local_port:localhost:$local_port specifies the details of the reverse tunnel. 
-    # It means that connections to $local_port on the remote (server) host are to be forwarded to localhost at the same port
-    ssh -p $ssh_server_port -nNT -R $local_port:localhost:$local_port $user@$server
+    # -R $target_port:localhost:$local_port specifies the details of the reverse tunnel.
+    # It means that connections to $target_port on the remote (server) host are to be forwarded to localhost at $local_port
+    ssh -p $ssh_server_port -nNT -R $target_port:localhost:$local_port $user@$server 
 }
 sshx_app() 
 {
@@ -86,25 +87,25 @@ sshx_app()
 ssh_tunnel_pc1()
 {
 	echo "${FUNCNAME[0]}"
-    ssh_tunnel turi 115.144.233.222:2201 5901 
+    ssh_tunnel turi 115.144.233.222:2201 5901 5901
 	return
 }
 ssh_tunnel_pc3()
 {
 	echo "${FUNCNAME[0]}"
-    ssh_tunnel turi 115.144.233.222:2203 5900
+    ssh_tunnel turi 115.144.233.222:2203 5900 5900
 	return
 }
 ssh_tunnel_pc4()
 {
 	echo "${FUNCNAME[0]} "
-    ssh_tunnel turi 115.144.233.222:2204 5900 
+    ssh_tunnel turi 115.144.233.222:2204 5900 5900
     return
 }
 ssh_tunnel_pc5()
 {
 	echo "${FUNCNAME[0]} "
-    ssh_tunnel turi 115.144.233.222:2205 5900 
+    ssh_tunnel turi 115.144.233.222:2205 5900 5900
 	return
 }
 
