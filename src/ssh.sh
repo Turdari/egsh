@@ -1,112 +1,137 @@
 #!/bin/bash
 
-
-ssh_tunnel()
-{
-	echo "${FUNCNAME[0]} < usr > < server ipv4 > <port_range>"
-
-    return
-}
-
-ssh_reverse_tunnel()
+ssh_tunnel() 
 {
     # Check if the function was called with exactly three arguments
     if [ "$#" -ne 3 ]; then
         # If not, print a usage message and return with an error status
-        echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4> <port>"
+        echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4:port> <local_port>"
+        return 1
+    fi
+
+    # Define variables that are local to the function
+    local user="$1"
+
+    # Save old IFS value and set new one to ":"
+    local oldifs="$IFS"
+    IFS=":"
+    local server_info=($2)
+    IFS="$oldifs"
+
+    local server="${server_info[0]}"
+    local ssh_server_port="${server_info[1]:-22}"  # Default SSH port is 22 if not provided
+    local local_port="$3"
+
+    # The command to create the SSH tunnel
+    # -nNT makes SSH run in the background without executing a remote command. This is necessary for setting up a tunnel
+    # -L $local_port:localhost:$local_port specifies the details of the tunnel. It means that connections to $local_port on the local host are to be forwarded to the remote (server) host at the same port
+    ssh -p $ssh_server_port -nNT -L $local_port:localhost:$local_port $user@$server
+}
+ssh_reverse_tunnel() 
+{
+    # Check if the function was called with exactly two arguments
+    if [ "$#" -ne 3 ]; then
+        # If not, print a usage message and return with an error status
+        echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4:sshport> <port>"
         return 1
     fi
 
     # Define variables that are local to the function
     # This prevents them from interfering with any global variables of the same name
     local user="$1"
-    local server="$2"
-    local port="$3"
 
+    # Save old IFS value and set new one to ":"
+    local oldifs="$IFS"
+    IFS=":"
+    local server_info=($2)
+    IFS="$oldifs"
+    
+    local server="${server_info[0]}"
+    local ssh_server_port="${server_info[1]:-22}"
+    local local_port="$3"
+    
     # The command to create the reverse SSH tunnel
     # -nNT makes SSH run in the background without executing a remote command. This is necessary for setting up a tunnel
-    # -R $port:localhost:$port specifies the details of the reverse tunnel. It means that connections to $port on the remote (server) host are to be forwarded to localhost at the same port
-    ssh -nNT -R $port:localhost:$port $user@$server
+    # -R $local_port:localhost:$local_port specifies the details of the reverse tunnel. 
+    # It means that connections to $local_port on the remote (server) host are to be forwarded to localhost at the same port
+    ssh -p $ssh_server_port -nNT -R $local_port:localhost:$local_port $user@$server
 }
-
-sshx_app()
+sshx_app() 
 {
-	echo "${FUNCNAME[0]} < usr > < server ipv4 > <port> <app-name>"
+    # Check if the function was called with exactly three arguments
+    if [ "$#" -lt 2 ]; then
+        # If not, print a usage message and return with an error status
+        echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4:ssh_port> [app_name]"
+        return 1
+    fi
 
-    [ -z $1 ] && [ -z $2 ] && [ -z $3 ] && [ -z $4 ]
+    # Define variables that are local to the function
+    local user="$1"
 
+    # Save old IFS value and set new one to ":"
+    local oldifs="$IFS"
+    IFS=":"
+    local server_info=($2)
+    IFS="$oldifs"
 
+    local server="${server_info[0]}"
+    local ssh_server_port="${server_info[1]:-22}"  # Default SSH port is 22 if not provided
+    local app_name="$3"
+
+    # The command to create an SSH connection and run the specified app
+    ssh -X -p $ssh_server_port $user@$server $app_name
 }
 
 #set server ssh tunnel in client 
-ssh_tunnel_pc1_p5901()
+ssh_tunnel_pc1()
 {
-	echo "${FUNCNAME[0]} < usr > < server ipv4 >"
-
-#	The -L switch specifies the port bindings. 
-#	In this case we’re binding port 5901 of the remote connection to port 5901 on your local machine. 
-#	The -C switch enables compression, 
-#	while the -N switch tells ssh that we don’t want to execute a remote command. 
-#	The -l switch specifies the remote login name.
-
-	[ ! -z $1 ] && [ ! -z $2 ] && ssh -p 2201 -L 5901:127.0.0.1:5901 -C -N -l $1 $2
-	#ssh -L 127.0.0.1:5901:127.0.0.1:5901 -C -N -l $1 $2
+	echo "${FUNCNAME[0]}"
+    ssh_tunnel turi 115.144.233.222:2201 5901 
 	return
 }
-ssh_tunnel_pc3_p5900()
+ssh_tunnel_pc3()
 {
-	echo "${FUNCNAME[0]} < usr > < server ipv4 >"
-
-#	The -L switch specifies the port bindings. 
-#	In this case we’re binding port 5901 of the remote connection to port 5901 on your local machine. 
-#	The -C switch enables compression, 
-#	while the -N switch tells ssh that we don’t want to execute a remote command. 
-#	The -l switch specifies the remote login name.
-
-	[ ! -z $1 ] && [ ! -z $2 ] && ssh -p 2203 -L 5900:127.0.0.1:5900 -C -N -l $1 $2
-	#ssh -L 127.0.0.1:5901:127.0.0.1:5901 -C -N -l $1 $2
+	echo "${FUNCNAME[0]}"
+    ssh_tunnel turi 115.144.233.222:2203 5900
 	return
 }
-ssh_tunnel_pc4_p5900()
+ssh_tunnel_pc4()
 {
-	echo "${FUNCNAME[0]} < usr > < server ipv4 >"
-
-#	The -L switch specifies the port bindings. 
-#	In this case we’re binding port 5901 of the remote connection to port 5901 on your local machine. 
-#	The -C switch enables compression, 
-#	while the -N switch tells ssh that we don’t want to execute a remote command. 
-#	The -l switch specifies the remote login name.
-
-	[ ! -z $1 ] && [ ! -z $2 ] && ssh -p 2204 -L 5900:127.0.0.1:5900 -C -N -l $1 $2
-	#ssh -L 127.0.0.1:5901:127.0.0.1:5901 -C -N -l $1 $2
-	return
+	echo "${FUNCNAME[0]} "
+    ssh_tunnel turi 115.144.233.222:2204 5900 
+    return
 }
-ssh_tunnel_pc5_p5900()
+ssh_tunnel_pc5()
 {
-	echo "${FUNCNAME[0]} < usr > < server ipv4 >"
-
-#	The -L switch specifies the port bindings. 
-#	In this case we’re binding port 5901 of the remote connection to port 5901 on your local machine. 
-#	The -C switch enables compression, 
-#	while the -N switch tells ssh that we don’t want to execute a remote command. 
-#	The -l switch specifies the remote login name.
-
-	[ ! -z $1 ] && [ ! -z $2 ] && ssh -p 2205 -L 5900:127.0.0.1:5900 -C -N -l $1 $2
-	#ssh -L 127.0.0.1:5901:127.0.0.1:5901 -C -N -l $1 $2
+	echo "${FUNCNAME[0]} "
+    ssh_tunnel turi 115.144.233.222:2205 5900 
 	return
 }
 
-
-
+sshx_pc1()
+{
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 115.144.233.222:2201 $1
+}
+sshx_pc2()
+{
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 115.144.233.222:2202 $1
+}
+sshx_pc3()
+{
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 115.144.233.222:2203 $1
+}
 sshx_pc4()
 {
-	echo "${FUNCNAME[0]} < usr > < server ipv4 >"
-    [ ! -z $1 ] && [ ! -z $2 ] && ssh -X -p 2204 $1@$2
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 115.144.233.222:2204 $1
 }
 sshx_pc5()
 {
-	echo "${FUNCNAME[0]} < usr > < server ipv4 >"
-    [ ! -z $1 ] && [ ! -z $2 ] && ssh -X -p 2205 $1@$2
+	echo "${FUNCNAME[0]} [appname]"
+    sshx_app turi 115.144.233.222:2205 $1
 }
 
 
