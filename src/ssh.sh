@@ -10,9 +10,17 @@ ssh_tunnel()
 
 ssh_reverse_tunnel()
 {
-	echo "${FUNCNAME[0]} < usr > < server ipv4 > <port_range>"
+    if [ "$#" -ne 3 ]; then
+        echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4> <port>"
+        return 1
+    fi
 
-    return
+    local user="$1"
+    local server="$2"
+    local port="$3"
+
+    # Create the reverse tunnel
+    ssh -nNT -R $port:localhost:$port $user@$server
 }
 
 sshx_app()
@@ -81,6 +89,8 @@ ssh_tunnel_pc5_p5900()
 	#ssh -L 127.0.0.1:5901:127.0.0.1:5901 -C -N -l $1 $2
 	return
 }
+
+
 
 sshx_pc4()
 {
