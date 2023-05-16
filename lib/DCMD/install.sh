@@ -40,3 +40,4 @@ rm -rf $INS_DIR_BIN/egsh
 git clone $EGSH_DIR $INS_DIR_LIB/egsh
 git -C $INS_DIR_LIB/egsh remote set-url origin https://github.com/Turdari/egsh.git
 ln -s $INS_DIR_LIB/egsh/egsh $INS_DIR_BIN/egsh
+ln -s $INS_DIR_LIB/egsh/egsh $INS_DIR_BIN/egsh-quiet
