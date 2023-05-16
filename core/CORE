@@ -184,11 +184,19 @@ CMDLINE=($@)
 case $# in
 	0 )
 		echo "< COMMAND >"
-		for (( i=0 ; i < $CMDMAXNUM ; i++ )) 
-		do echo $i ${CMDLIST[$i]}
-		done
+
+        #https://unix.stackexchange.com/questions/569435/how-do-i-convert-a-single-column-to-3-columns
+		#echo "${CMDLIST[@]}" | tr ' ' '\n' | pr -aT2
+
+#		for (( i=0 ; i < $CMDMAXNUM ; i++ )) 
+#		do echo $i ${CMDLIST[$i]}
+#		done
 		# pipe above output to mktemp ..
 		# and column -x $variable
+
+        for index in "${!CMDLIST[@]}"; do 
+            printf "%02d: %s\n" $((index)) "${CMDLIST[$index]}"
+        done | pr -aT2
 	
 		echo "Usage : egsh < COMMAND | COMMAND_NUM >"
 		exit 0
