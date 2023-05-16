@@ -23,7 +23,7 @@ EGSH()
 		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
 		echo "CMD := { list(ls) | include(in) | exclude(ex) | clear(clr)"
 		echo "         env-list(els) | env-include(ein) | env-exclude(eex) | clear(clr)"
-        echo "         install(ins) | remove(rm) | update(up) | upload(upl) } "
+        echo "         install(ins) | remove(rm) | download(dl) | upload(upl) } "
     else
 case $1 in
 	list | ls )
@@ -131,8 +131,8 @@ case $1 in
             cp $EGSH_CTX_DCMD_LIB/remove.sh $EGSH_USR_DCMD
         fi
 	;;
-	update | up )	
-		echo "Usage : update(up) < START >"
+	download | dl )	
+		echo "Usage : download(dl) < START >"
 		if [ ! -z $2 ] 
 	    then 
 	    	cp $EGSH_CTX_DCMD_LIB/update.sh $EGSH_USR_DCMD
@@ -149,10 +149,10 @@ case $1 in
 	;;
 
 	* )	
-		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
+		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " 
 		echo "CMD := { list(ls) | include(in) | exclude(ex) | clear(clr)"
 		echo "         env-list(els) | env-include(ein) | env-exclude(eex) | clear(clr)"
-        echo "         install(ins) | remove(rm) | update(up) | upload(upl) } "
+        echo "         install(ins) | remove(rm) | download(dl) | upload(upl) } "
 	;;
 esac
     fi

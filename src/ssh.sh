@@ -10,16 +10,22 @@ ssh_tunnel()
 
 ssh_reverse_tunnel()
 {
+    # Check if the function was called with exactly three arguments
     if [ "$#" -ne 3 ]; then
+        # If not, print a usage message and return with an error status
         echo "Usage: ${FUNCNAME[0]} <user> <server_ipv4> <port>"
         return 1
     fi
 
+    # Define variables that are local to the function
+    # This prevents them from interfering with any global variables of the same name
     local user="$1"
     local server="$2"
     local port="$3"
 
-    # Create the reverse tunnel
+    # The command to create the reverse SSH tunnel
+    # -nNT makes SSH run in the background without executing a remote command. This is necessary for setting up a tunnel
+    # -R $port:localhost:$port specifies the details of the reverse tunnel. It means that connections to $port on the remote (server) host are to be forwarded to localhost at the same port
     ssh -nNT -R $port:localhost:$port $user@$server
 }
 
