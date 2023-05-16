@@ -473,6 +473,12 @@ if v:version > 800
 endif
 
 "TAB related registration
+augroup my_netrw_maps
+    autocmd!
+    autocmd FileType netrw nnoremap <buffer> <C-l> <C-PageDown>
+    autocmd FileType netrw nnoremap <buffer> <C-h> <C-PageUp>
+augroup END
+
 if v:version > 700
     nnoremap <silent> <C-l> <C-PageDown>
     nnoremap <silent> <C-h> <C-PageUp>
