@@ -78,8 +78,9 @@ EGSH()
 	echo "< ${FUNCNAME[0]} - egsh manager >"
 	if [ -z $1 ] ; 
 	then
-        echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
-		echo "CMD := { list(ls) | include(in) | exclude(ex) | install(ins) | update(up) | clear(clr) }"
+		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
+		echo "CMD := { list(ls) | include(in) | exclude(ex) | clear(clr)"
+        echo "         install(ins) | remove(rm) | update(up) | upload(upl) } "
     else
 case $1 in
 	list | ls )
@@ -120,21 +121,6 @@ case $1 in
 			echo ${EXCLUDE_CMDLIST[@]}
 		fi
 	;;
-	install | ins )	
-		echo "Usage : install(ins) < START >"
-
-		if [ ! -z $2 ] 
-	        then 
-	            cp $EGSH_CTX_DCMD_LIB/install.sh $EGSH_USR_DCMD
-	        fi
-	;;
-	update | up )	
-		echo "Usage : update(up) < START >"
-		if [ ! -z $2 ] 
-	    then 
-	    	cp $EGSH_CTX_DCMD_LIB/update.sh $EGSH_USR_DCMD
-        fi
-	;;
 	clear | clr )	
 		echo "Usage : clear(clear) < START >"
 		if [ ! -z $2 ] 
@@ -143,6 +129,14 @@ case $1 in
             #cp $EGSH_CTX_DCMD_LIB/remove.sh $EGSH_USR_DCMD
         fi
 	;;
+	install | ins )	
+		echo "Usage : install(ins) < START >"
+
+		if [ ! -z $2 ] 
+	        then 
+	            cp $EGSH_CTX_DCMD_LIB/install.sh $EGSH_USR_DCMD
+	        fi
+	;;
 	remove | rm )	
 		echo "Usage : remove(rm) < START >"
 		if [ ! -z $2 ] 
@@ -150,11 +144,25 @@ case $1 in
             cp $EGSH_CTX_DCMD_LIB/remove.sh $EGSH_USR_DCMD
         fi
 	;;
-
+	update | up )	
+		echo "Usage : update(up) < START >"
+		if [ ! -z $2 ] 
+	    then 
+	    	cp $EGSH_CTX_DCMD_LIB/update.sh $EGSH_USR_DCMD
+        fi
+	;;
+	upload | upl )	
+		echo "Usage : upload(upl) < START >"
+		if [ ! -z $2 ] 
+	    then 
+            git -C $EGSH_DIR push origin
+        fi
+	;;
 
 	* )	
 		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
-		echo "CMD := { list(ls) | include(in) | exclude(ex) | install(ins) | update(up) | clear(clr) }"
+		echo "CMD := { list(ls) | include(in) | exclude(ex) | clear(clr)"
+        echo "         install(ins) | remove(rm) | update(up) | upload(upl) } "
 	;;
 esac
     fi
