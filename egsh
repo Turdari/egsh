@@ -115,12 +115,21 @@ EGSH_RETURN=$?
 ############## CORE EXCUTION ###############
 
 #   4. Run Delay Command activity
-if [ -d $EGSH_USR_DCMD ] 
-then
-    if ( ls $EGSH_USR_DCMD | grep -q ".*\.sh" ) ; then
-        rm -f /tmp/DCMD-$USER
-        cp $EGSH_CTX_CORE/DCMD /tmp/DCMD-$USER
-        /tmp/DCMD-$USER &
-    fi  
-fi
+#if [ -d $EGSH_USR_DCMD ] 
+#then
+#    if ( ls $EGSH_USR_DCMD | grep -q ".*\.sh" ) ; then
+#        rm -f /tmp/DCMD-$USER
+#        cp $EGSH_CTX_CORE/DCMD /tmp/DCMD-$USER
+#        /tmp/DCMD-$USER $EGSH_DIR &
+#    fi  
+#fi
+
+for f in $(find $EGSH_USR_DCMD -type f)
+do :
+    LAST_SCRIPT_NAME="$USER-egsh-dcmd-$(basename $f)"
+    rm -f /tmp/$USER-egsh-dcmd-*
+    #echo "mv $f /tmp/$LAST_SCRIPT_NAME"
+    mv $f /tmp/$LAST_SCRIPT_NAME
+    /tmp/$LAST_SCRIPT_NAME $EGSH_DIR &
+done 
 
