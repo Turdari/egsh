@@ -52,6 +52,21 @@ do
                 esac
             fi
 
+            if ( ! grep -q "EGSH_HOMESYNC" $HOME/.bashrc ) ; then
+                vecho "SYNC .bashrc egsh for .alias"
+                read -p "Do you want to overwrite? (y/n)" yn
+                case $yn in
+                    y | Y )
+                        cp $HOME/.bashrc $HOME/.bashrc_backup
+                        echo "##EGSH_HOMESYNC##" >> $HOME/.bashrc
+                        echo "source $HOME/.alias" >> $HOME/.bashrc
+                    ;;
+                    n | N )
+                    ;;
+                    * )
+                    ;;
+                esac
+            fi
 
 #            if ( ! diff -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf > /dev/null ) ; then
 #                vecho "SYNC .tmux.conf"

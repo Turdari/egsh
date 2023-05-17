@@ -1,8 +1,8 @@
 ############################################ 
-alias a     alias
+#alias a     alias
 ######## 1,Basic definition. ###############
 #a cd 'cd \!* ; set prompt = $hostname": "$cwd" > "'
-a cp        "cp -i"
+#a cp        "cp -i"
 
 
 
