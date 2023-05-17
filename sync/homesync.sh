@@ -23,7 +23,7 @@ do
     case $i in
     	dosync )
             if ( ! diff -s $ESYNCHOME/.vimrc $HOME/.vimrc  > /dev/null ) ; then
-                echo "SYNC .vimrc "
+                vecho "SYNC .vimrc "
                 read -p "Do you want to overwrite? (y/n)" yn
                 case $yn in
                     y | Y )
@@ -38,7 +38,7 @@ do
             fi
 
             if ( ! diff -s $ESYNCHOME/.alias $HOME/.alias  > /dev/null ) ; then
-                echo "SYNC .alias "
+                vecho "SYNC .alias "
                 read -p "Do you want to overwrite? (y/n)" yn
                 case $yn in
                     y | Y )
@@ -54,7 +54,7 @@ do
 
 
 #            if ( ! diff -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf > /dev/null ) ; then
-#                echo "SYNC .tmux.conf"
+#                vecho "SYNC .tmux.conf"
 #                read -p "Do you want to overwrite? (y/n)" yn
 #                case $yn in
 #                    y | Y )
@@ -68,12 +68,12 @@ do
 #                esac
 #            fi
 #            if ( ! grep -q "EGSH" $HOME/.bashrc ) ; then
-#                echo "SYNC .bashrc egsh shsrc "
+#                vecho "SYNC .bashrc egsh shsrc "
 #                read -p "Do you want to overwrite? (y/n)" yn
 #                case $yn in
 #                    y | Y )
-#                        echo "##EGSH##" >> $HOME/.bashrc
-#                        echo "for f in \$(find $EGSH_USR_SHSRC -type f ) ; do : ; source \$f ; done" >> $HOME/.bashrc
+#                        vecho "##EGSH##" >> $HOME/.bashrc
+#                        vecho "for f in \$(find $EGSH_USR_SHSRC -type f ) ; do : ; source \$f ; done" >> $HOME/.bashrc
 #                    ;;
 #                    n | N )
 #                    ;;
@@ -84,15 +84,15 @@ do
     	;;
     	issync )
             if ( ! diff -s $ESYNCHOME/.vimrc $HOME/.vimrc > /dev/null ) ; then
-                echo ".vimrc diff!"
+                vecho ".vimrc diff!"
                 RV=1;
             fi
 #            if ( ! diff -s $ESYNCHOME/.tmux.conf $HOME/.tmux.conf > /dev/null ) ; then
-#                echo ".tmux.conf diff!"
+#                vecho ".tmux.conf diff!"
 #                RV=1;
 #            fi
             if ( ! grep -q "EGSH_HOMESYNC" $HOME/.bashrc ) ; then
-                echo ".bashrc egsh_home not registered."
+                vecho ".bashrc egsh_home not registered."
                 RV=1;
             fi
         ;;

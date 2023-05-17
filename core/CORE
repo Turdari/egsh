@@ -14,10 +14,11 @@ export EGSH_CTX_ESYNC ;
 export EGSH_CTX_ESYNC_LIB ;    
 export EGSH_CTX_DCMD_LIB ;
 export EGSH_CTX_PKG_LIB ;
+export -f vecho ;
 
 EGSH()
 {
-	echo "< ${FUNCNAME[0]} - egsh manager >"
+	#echo "< ${FUNCNAME[0]} - egsh manager >"
 	if [ -z $1 ] ; 
 	then
 		echo "Usage : ${FUNCNAME[0]} <CMD> [ CMDARG ] " ;
@@ -107,8 +108,17 @@ case $1 in
         for i in $(find $EGSH_USR_ESYNC -type l )
         do :
             sh $i dosync
-            test $? -eq 0 || echo "<$i> sync incomplete "
+
+            
+            test $? -eq 0 || vecho "do sync error in <$i>"
             # run script.sh checkinstall, if yes sync
+        done
+    ;;
+	env-sync-check | esyncc)
+        for i in $(find $EGSH_USR_ESYNC -type l )
+        do :
+            sh $i issync 
+            test $? -eq 0 || vecho "sync incomplete : $i"
         done
     ;;
 	install | ins )	
@@ -159,14 +169,13 @@ ENVARRAY=( $(ls $EGSH_USR_ESYNC) )
 INCARRAY=( $(ls $EGSH_USR_INC) )
 [ $EGSH_FUNCNAME == "egsh-quiet" ] || echo "ENV: ${ENVARRAY[@]}"
 [ $EGSH_FUNCNAME == "egsh-quiet" ] || echo "INC: ${INCARRAY[@]}"
-# Use included script to check envsync
-for i in $(find $EGSH_USR_ESYNC -type l )
-do :
-    sh $i issync 
-    #sh $i issync &> /dev/null
-    test $? -eq 0 || echo "<$i> sync incomplete "
-    # run script.sh checkinstall, if yes sync
-done
+
+if [ $EGSH_FUNCNAME == "egsh-quiet" ] ; 
+then :
+else :
+    EGSH env-sync-check
+fi
+
 # Use included script to add function
 for i in $( ls -p $EGSH_USR_INC | grep -v / )
 do 	source $EGSH_USR_INC/$i 
@@ -174,9 +183,9 @@ done
 
 ## Launch Command ##
 CMDLIST=( "EGSH" )
-TCMDLIST=( $( declare -F | sed 's/declare -f //g' ) )
+TCMDLIST=( $( declare -F | sed 's/declare -f[x]\? //g' ) )
 TCMDLIST=( "${TCMDLIST[@]/EGSH}" )
-#TCMDLIST=( "${TCMDLIST[@]/ESYNC}" )
+TCMDLIST=( "${TCMDLIST[@]/vecho}" )
 TCMDLIST=( "${TCMDLIST[@]/SYNCORE}" )
 CMDLIST+=( ${TCMDLIST[@]} )
 CMDMAXNUM=${#CMDLIST[@]}
@@ -184,16 +193,6 @@ CMDLINE=($@)
 case $# in
 	0 )
 		echo "< COMMAND >"
-
-        #https://unix.stackexchange.com/questions/569435/how-do-i-convert-a-single-column-to-3-columns
-		#echo "${CMDLIST[@]}" | tr ' ' '\n' | pr -aT2
-
-#		for (( i=0 ; i < $CMDMAXNUM ; i++ )) 
-#		do echo $i ${CMDLIST[$i]}
-#		done
-		# pipe above output to mktemp ..
-		# and column -x $variable
-
         for index in "${!CMDLIST[@]}"; do 
             printf "%02d: %s\n" $((index)) "${CMDLIST[$index]}"
         done | pr -aT2
