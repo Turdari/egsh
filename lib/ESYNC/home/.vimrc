@@ -437,7 +437,30 @@ if v:version > 800
             let t:term_buf_nr = -1
         endif
     endfunction
-    
+   
+function! OpenInTerminal()
+
+    let item = netrw#Call('NetrwFile', netrw#Call('NetrwGetWord'))
+
+    if isdirectory(item)
+"        echo 'Directory: ' . item
+        execute 'tabnew'
+        execute 'terminal ++curwin sh -c "cd '. shellescape(item) .' && exec $SHELL"'
+    else
+"        echo 'File: ' . item
+        execute 'tabedit ' . item
+    endif
+endfunction
+
+augroup NetrwMappings
+    autocmd!
+    autocmd FileType netrw nnoremap <buffer> t :call OpenInTerminal()<CR>
+augroup END
+
+
+
+
+ 
     function! MkSession(...)
         " Handle the argument
         if empty(a:000)
