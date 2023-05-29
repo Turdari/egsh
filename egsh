@@ -57,7 +57,12 @@ EGSH_CTX_ESYNC_LIB=$EGSH_CTX_LIB/ESYNC
 EGSH_CTX_DCMD_LIB=$EGSH_CTX_LIB/DCMD
 EGSH_CTX_PKG_LIB=$EGSH_CTX_LIB/CORE 
 
-
+## general function.
+function vecho(){
+    local FILE_NAME=$( basename ${BASH_SOURCE[1]})
+    local LINE_NUM=${BASH_LINENO[0]}
+    printf "[%s:%04d] %s\n"  $FILE_NAME $LINE_NUM "$@"
+}
 
 #   1. Print egsh version
 
@@ -112,6 +117,9 @@ export EGSH_CTX_ESYNC ;
 export EGSH_CTX_ESYNC_LIB ;    
 export EGSH_CTX_DCMD_LIB ;
 export EGSH_CTX_PKG_LIB ;
+
+# export function
+export -f vecho
 
 ############## CORE EXCUTION ###############
 $EGSH_CTX_CORE/CORE $@
