@@ -442,11 +442,11 @@ if v:version > 800
         let item = netrw#Call('NetrwFile', netrw#Call('NetrwGetWord'))
         if isdirectory(item)
             echo 'Directory: ' . item
-            " execute 'tabnew'
-            " execute 'terminal ++curwin sh -c "cd '. shellescape(item) .' && exec $SHELL"'
+            execute 'tabnew'
+            execute 'terminal ++curwin sh -c "cd '. shellescape(item) .' && exec $SHELL"'
         elseif filereadable(item)
             echo 'File: ' . item
-            " execute 'tabedit ' . item
+            execute 'tabedit ' . item
         elseif item =~ '/.*/.*/$'
             " Handle the exception case
             let parent_dir = fnamemodify(item, ':h')
