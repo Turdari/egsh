@@ -438,28 +438,37 @@ if v:version > 800
         endif
     endfunction
    
-function! OpenInTerminal()
+    function! OpenInTerminal()
+        let item = netrw#Call('NetrwFile', netrw#Call('NetrwGetWord'))
+        if isdirectory(item)
+            echo 'Directory: ' . item
+            " execute 'tabnew'
+            " execute 'terminal ++curwin sh -c "cd '. shellescape(item) .' && exec $SHELL"'
+        elseif filereadable(item)
+            echo 'File: ' . item
+            " execute 'tabedit ' . item
+        elseif item =~ '/.*/.*/$'
+            " Handle the exception case
+            let parent_dir = fnamemodify(item, ':h')
+            let parent_dir_no_slash = substitute(parent_dir, '/[^/]\+$', '', '')
+    "        echo 'directory: ' . parent_dir
+    "        echo 'no slash directory: ' . parent_dir_no_slash
+            if isdirectory(parent_dir_no_slash)
+                echo 'Exception directory: ' . parent_dir
+                execute 'tabnew'
+                execute 'terminal ++curwin sh -c "cd '. shellescape(parent_dir_no_slash) .' && exec $SHELL"'
+            else
+                echo 'Unknown item: ' . item
+            endif
+        else
+            echo 'Unknown item: ' . item
+        endif 
+    endfunction
 
-    let item = netrw#Call('NetrwFile', netrw#Call('NetrwGetWord'))
-
-    if isdirectory(item)
-"        echo 'Directory: ' . item
-        execute 'tabnew'
-        execute 'terminal ++curwin sh -c "cd '. shellescape(item) .' && exec $SHELL"'
-    else
-"        echo 'File: ' . item
-        execute 'tabedit ' . item
-    endif
-endfunction
-
-augroup NetrwMappings
-    autocmd!
-    autocmd FileType netrw nnoremap <buffer> t :call OpenInTerminal()<CR>
-augroup END
-
-
-
-
+    augroup NetrwMappings
+        autocmd!
+        autocmd FileType netrw nnoremap <buffer> t :call OpenInTerminal()<CR>
+    augroup END
  
     function! MkSession(...)
         " Handle the argument
