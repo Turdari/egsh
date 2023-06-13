@@ -270,10 +270,16 @@ endfunc
 "CTAGS {
 " Set ctags directory
 let ctag_dirname = $HOME . "/.vim/ctag-files"
-if !isdirectory(ctag_dirname)
+
+if isdirectory(ctag_dirname)
+    for tagfile in split(glob(ctag_dirname . '/*'), '\n')
+        execute "set tags+=" . fnameescape(tagfile)
+    endfor
+else
     call mkdir(ctag_dirname, "p")
 endif
-execute "set tags+=" . expand(ctag_dirname) . "/*"
+
+"execute "set tags+=" . expand(ctag_dirname) . "/*"
 
 "FUNCTION_00 search-tag-from directory
 function! RecursiveTagSearch(startdir) abort
