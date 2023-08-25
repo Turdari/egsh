@@ -93,21 +93,29 @@ ssh_tunnel_pc1()
 ssh_tunnel_pc3()
 {
 	echo "${FUNCNAME[0]}"
-    ssh_tunnel turi 115.144.233.222:2203 5900 5900
+    ssh_tunnel turi 115.144.233.222:2203 5900 5903
 	return
 }
 ssh_tunnel_pc4()
 {
 	echo "${FUNCNAME[0]} "
-    ssh_tunnel turi 115.144.233.222:2204 5900 5900
+    ssh_tunnel turi 115.144.233.222:2204 5900 5904
     return
 }
 ssh_tunnel_pc5()
 {
 	echo "${FUNCNAME[0]} "
-    ssh_tunnel turi 115.144.233.222:2205 5900 5900
+    ssh_tunnel turi 115.144.233.222:2205 5900 5905
 	return
 }
+
+ssh_tunnel_pc6()
+{
+	echo "${FUNCNAME[0]} "
+    ssh_tunnel turi 115.144.233.222:2206 5900 5906
+	return
+}
+
 
 sshx_pc1()
 {
