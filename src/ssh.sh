@@ -26,7 +26,7 @@ ssh_tunnel()
     # The command to create the SSH tunnel
     # -nNT makes SSH run in the background without executing a remote command. This is necessary for setting up a tunnel
     # -L $local_port:localhost:$local_port specifies the details of the tunnel. It means that connections to $local_port on the local host are to be forwarded to the remote (server) host at the same port
-    ssh -p $ssh_server_port -nNT -L $target_port:localhost:$local_port $user@$server
+    ssh -p $ssh_server_port -nNT -L $local_port:localhost:$target_port $user@$server
 }
 ssh_reverse_tunnel() 
 {
