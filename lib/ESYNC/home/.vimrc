@@ -17,6 +17,9 @@ if v:version > 700
     set runtimepath^=~/.vim/bundle/vim-conque
     helptags ~/.vim/bundle/vim-conque/doc
 endif
+if v:version > 800
+    packadd termdebug
+endif
 function! BundleInstall()
   let repo1 = "git clone https://github.com/goballooning/vim-conque.git ~/.vim/bundle/vim-conque"  
   let repo2 = "git clone https://github.com/preservim/tagbar.git ~/.vim/bundle/tagbar"  
