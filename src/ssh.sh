@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DEFAULT_IP="121.126.215.86"
+#115.144.233.222
 ssh_tunnel() 
 {
     # Check if the function was called with exactly three arguments
@@ -87,32 +89,32 @@ sshx_app()
 ssh_tunnel_pc1()
 {
 	echo "${FUNCNAME[0]}"
-    ssh_tunnel turi 115.144.233.222:2201 5901 5901
+    ssh_tunnel turi ${DEFAULT_IP}:2201 5901 5901
 	return
 }
 ssh_tunnel_pc3()
 {
 	echo "${FUNCNAME[0]}"
-    ssh_tunnel turi 115.144.233.222:2203 5900 5903
+    ssh_tunnel turi ${DEFAULT_IP}:2203 5900 5903
 	return
 }
 ssh_tunnel_pc4()
 {
 	echo "${FUNCNAME[0]} "
-    ssh_tunnel turi 115.144.233.222:2204 5900 5904
+    ssh_tunnel turi ${DEFAULT_IP}:2204 5900 5904
     return
 }
 ssh_tunnel_pc5()
 {
 	echo "${FUNCNAME[0]} "
-    ssh_tunnel turi 115.144.233.222:2205 5900 5905
+    ssh_tunnel turi ${DEFAULT_IP}:2205 5900 5905
 	return
 }
 
 ssh_tunnel_pc6()
 {
 	echo "${FUNCNAME[0]} "
-    ssh_tunnel turi 115.144.233.222:2206 5900 5906
+    ssh_tunnel turi ${DEFAULT_IP}:2206 5900 5906
 	return
 }
 
@@ -120,27 +122,27 @@ ssh_tunnel_pc6()
 sshx_pc1()
 {
 	echo "${FUNCNAME[0]} [appname]"
-    sshx_app turi 115.144.233.222:2201 $1
+    sshx_app turi ${DEFAULT_IP}:2201 $1
 }
 sshx_pc2()
 {
 	echo "${FUNCNAME[0]} [appname]"
-    sshx_app turi 115.144.233.222:2202 $1
+    sshx_app turi ${DEFAULT_IP}:2202 $1
 }
 sshx_pc3()
 {
 	echo "${FUNCNAME[0]} [appname]"
-    sshx_app turi 115.144.233.222:2203 $1
+    sshx_app turi ${DEFAULT_IP}:2203 $1
 }
 sshx_pc4()
 {
 	echo "${FUNCNAME[0]} [appname]"
-    sshx_app turi 115.144.233.222:2204 $1
+    sshx_app turi ${DEFAULT_IP}:2204 $1
 }
 sshx_pc5()
 {
 	echo "${FUNCNAME[0]} [appname]"
-    sshx_app turi 115.144.233.222:2205 $1
+    sshx_app turi ${DEFAULT_IP}:2205 $1
 }
 
 sshx_local_pc1()
