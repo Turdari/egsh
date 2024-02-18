@@ -89,7 +89,7 @@ sshx_app()
 ssh_tunnel_pc1()
 {
 	echo "${FUNCNAME[0]}"
-    ssh_tunnel turi ${DEFAULT_IP}:2201 5901 5901
+    ssh_tunnel turi ${DEFAULT_IP}:2201 5900 5901
 	return
 }
 ssh_tunnel_pc3()
