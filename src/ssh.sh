@@ -1,6 +1,12 @@
 #!/bin/bash
 
 DEFAULT_IP="121.126.215.86"
+
+ssh_target()
+{
+	echo $DEFAULT_IP
+}
+
 #115.144.233.222
 ssh_tunnel() 
 {
