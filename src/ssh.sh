@@ -92,6 +92,12 @@ ssh_tunnel_pc1()
     ssh_tunnel turi ${DEFAULT_IP}:2201 5900 5901
 	return
 }
+ssh_tunnel_pc2()
+{
+	echo "${FUNCNAME[0]}"
+    ssh_tunnel turi ${DEFAULT_IP}:2202 5900 5902
+	return
+}
 ssh_tunnel_pc3()
 {
 	echo "${FUNCNAME[0]}"
